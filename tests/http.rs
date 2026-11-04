@@ -66,7 +66,8 @@ fn server_serves_pages_and_bounds_requests() {
         .set_read_timeout(Some(Duration::from_secs(3)))
         .unwrap();
     stream.write_all(oversized.as_bytes()).unwrap();
-    let mut buf = [0; 512];
-    let read = stream.read(&mut buf).unwrap();
-    assert!(String::from_utf8_lossy(&buf[..read]).starts_with("HTTP/1.1 431"));
+    // TCP reads may return only part of the status line.
+    let mut status = [0; 12];
+    stream.read_exact(&mut status).unwrap();
+    assert_eq!(&status, b"HTTP/1.1 431");
 }
