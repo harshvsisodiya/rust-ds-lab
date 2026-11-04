@@ -1,0 +1,17 @@
+name: Linux checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust components
+        run: rustup toolchain install stable --profile minimal --component rustfmt --component clippy
+      - run: cargo +stable fmt --check
+      - run: cargo +stable clippy --offline --all-targets -- -D warnings
+      - run: cargo +stable test --offline --locked
+      - run: cargo +stable build --release --offline --locked
