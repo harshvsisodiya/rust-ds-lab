@@ -1,17 +1,87 @@
-name: Linux checks
+name: Native builds
 on:
   push:
+    branches: [main]
   pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: native-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            asset: rust-ds-lab-linux-x86_64
+            binary: rust-ds-lab
+          - os: windows-2022
+            target: x86_64-pc-windows-msvc
+            asset: rust-ds-lab-windows-x86_64.exe
+            binary: rust-ds-lab.exe
+          - os: macos-14
+            target: aarch64-apple-darwin
+            asset: rust-ds-lab-macos-arm64
+            binary: rust-ds-lab
+          - os: macos-15-intel
+            target: x86_64-apple-darwin
+            asset: rust-ds-lab-macos-x86_64
+            binary: rust-ds-lab
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - name: Install Rust components
-        run: rustup toolchain install stable --profile minimal --component rustfmt --component clippy
-      - run: cargo +stable fmt --check
-      - run: cargo +stable clippy --offline --all-targets -- -D warnings
-      - run: cargo +stable test --offline --locked
-      - run: cargo +stable build --release --offline --locked
+      - name: Install Linux development libraries
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libgl1-mesa-dev
+      - name: Install stable Rust
+        run: rustup toolchain install stable --profile minimal --component rustfmt --component clippy --target ${{ matrix.target }}
+      - name: Format
+        run: cargo +stable fmt --check
+      - name: Lint
+        run: cargo +stable clippy --locked --all-targets --target ${{ matrix.target }} -- -D warnings
+      - name: Test structure models, traces and native views
+        run: cargo +stable test --locked --target ${{ matrix.target }}
+      - name: Optimized native executable
+        run: cargo +stable build --release --locked --target ${{ matrix.target }}
+      - name: Prepare single-file download
+        shell: bash
+        run: |
+          mkdir -p dist
+          cp "target/${{ matrix.target }}/release/${{ matrix.binary }}" "dist/${{ matrix.asset }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: dist/${{ matrix.asset }}
+          if-no-files-found: error
+  release:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Publish complete release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          version=$(sed -n 's/^version = "\([^"]*\)"/\1/p' Cargo.toml | head -1)
+          tag="v${version}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag already exists; preserving its assets. Bump Cargo.toml for another release."
+            exit 0
+          fi
+          (cd dist && sha256sum rust-ds-lab-* > SHA256SUMS.txt)
+          gh release create "$tag" dist/* --target "$GITHUB_SHA" --title "Rust DS Lab $version — native desktop" --notes-file docs/RELEASE.md --draft
+          gh release edit "$tag" --draft=false

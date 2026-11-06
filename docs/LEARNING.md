@@ -1,60 +1,24 @@
-# Your data structure practice plan
+# Learn by predicting
 
-Use this loop: **predict → perform → explain → implement**. Write an answer before revealing it. A correct guess without an explanation is not mastery.
+For each structure: describe the problem it solves, draw a tiny example, predict an operation, step through it, and state the rule that remains true. Then explain its time and memory cost. Keep inputs small enough to inspect every change.
 
-| Session | Structures | What you should be able to explain |
-|---|---|---|
-| 1 | Array, stack, queue | Indexed access, shifting, LIFO versus FIFO |
-| 2 | Deque and three linked lists | Both ends, pointer relationships, termination |
-| 3 | Hash map and hash set | Keys, updates, duplicates, collisions |
-| 4 | BST and min heap | Search ordering versus parent ordering |
-| 5 | Trie | Shared prefixes, complete-word markers |
-| 6 | Graph and disjoint set | Adjacency, connectivity, representatives |
-| 7 | Fenwick and segment trees | Partial sums, ranges, update/query costs |
+## Suggested sequence
 
-## The daily 20-minute drill
+1. **Arrays and hashing:** explain direct indexing, collisions, duplicate updates and membership. Compare a count map with a set: what information does the set discard?
+2. **Linear structures:** predict stack, queue and deque output. Explain why a bracket parser needs the most recent unmatched opening bracket.
+3. **Pointers and windows:** justify each discarded candidate in two-pointer/binary search. Compute a rolling total by removing one value and adding another.
+4. **Linked structures:** draw predecessor/successor changes. Distinguish knowing a node from searching for its position. Explain the stopping condition for a circular traversal.
+5. **Trees, tries and heaps:** contrast sorted-subtree order with heap order. Insert increasing values into the BST. Compare a word ending with a shared prefix.
+6. **Graphs and backtracking:** distinguish a visited set from a recursion path. Trace BFS's queue, then Dijkstra's tentative distances. Explain why Dijkstra's trace requires nonnegative weights.
+7. **Dynamic programming and ranges:** state exactly what one table entry represents. Compare a Fenwick prefix with a segment-tree interval. Decide whether touching intervals merge based on the chosen endpoint convention.
+8. **Greedy, bits and mathematics:** explain why earliest-finish scheduling leaves room for later jobs. Clear the lowest set bit repeatedly. Explain why Euclid preserves the GCD.
 
-- **5 minutes:** rebuild yesterday's example without looking at the code.
-- **10 minutes:** predict three operation sequences; check each in the visualizer.
-- **5 minutes:** state the invariant and complexity aloud. Explain which implementation assumption makes that complexity true.
+Each roadmap and structure section has 10 worked cases: 3 easy, 4 medium, 3 hard. The cases intentionally repeat a core method with changed inputs so you can separate memorizing an output from understanding the rule. These difficulty labels are local learning labels, not LeetCode ratings.
 
-Then implement one structure yourself in Rust. The Python example is a conceptual comparison, not a requirement to write Python.
+## A useful hard-case answer
 
-## Deeper challenges
+Give the result, a short invariant, a reason each step preserves it, and a termination argument. Derive time from the number of operations and space from the state retained. Name a tempting wrong approach and supply a counterexample. Do not count the visualizer's teaching snapshots as algorithm auxiliary space.
 
-1. **Dynamic array:** why is append amortized O(1) even though a resize copies O(n) elements? Distinguish worst-case from amortized cost.
-2. **Stack:** explain how a browser history or function-call stack differs from a queue.
-3. **Queue:** implement a queue with two stacks, then explain the amortized cost.
-4. **Deque:** write a ring buffer. Distinguish logical positions from physical array indices.
-5. **Singly linked list:** implement a real owned Rust chain using `Option<Box<Node>>`; compare it to this app's diagram model.
-6. **Doubly linked list:** explain why safe Rust ownership becomes more complicated with backward links. Investigate arena indices before reaching for unsafe pointers.
-7. **Circular list:** handle empty and one-node cases; show why following links until null cannot terminate.
-8. **Hash map:** deliberately insert `a:1,i:2,q:3` in the lab. All collide under its teaching hash. Explain separate chaining and load factor.
-9. **Hash set:** distinguish a set from a multiset. Predict what removing a duplicate should mean in each.
-10. **BST:** compare insertion orders `1,2,3,4,5` and `3,1,5,2,4`. Explain why balancing is useful.
-11. **Heap:** map parent and child array indices. Explain why binary searching the heap array is invalid.
-12. **Trie:** insert `car,cart,cat`; remove `car`. Predict which terminal markers and shared prefixes remain.
-13. **Graph:** compare adjacency lists and matrices for sparse and dense graphs. Explain why an undirected edge is stored twice in an adjacency list.
-14. **Disjoint set:** implement find with path compression and union by size. Explain why this does not enumerate graph paths.
-15. **Fenwick:** derive `i & -i` using binary arithmetic. Compute a range sum as the difference of two prefix sums.
-16. **Segment tree:** implement a logarithmic range query and point update. Compare its flexibility with a Fenwick tree.
+## Beyond this release
 
-## Self-assessment
-
-For each structure, record:
-
-| Date | Structure | Prediction | Actual result | Why it differed | Repeat tomorrow? |
-|---|---|---|---|---|---|
-| | | | | | |
-
-You understand a structure when you can: draw it from memory, state its invariant, predict a sequence with duplicates/empty inputs, explain the cost, and implement its core operations.
-
-## Further reading
-
-- Rust ownership: <https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html>
-- Rust collections: <https://doc.rust-lang.org/std/collections/>
-- Python data structures: <https://docs.python.org/3/tutorial/datastructures.html>
-- Python deque: <https://docs.python.org/3/library/collections.html#collections.deque>
-- Python heapq: <https://docs.python.org/3/library/heapq.html>
-
-Next extensions could include AVL/red-black trees, B-trees, sparse matrices, skip lists, and persistent structures. Add them only when their invariants and behavior can be tested clearly.
+Investigate balanced search trees, B-trees, skip lists, radix/compressed tries, monotonic deques, persistent structures and probabilistic filters. Compare CPU cache locality before concluding that fewer big-O operations always means a faster real program. These are follow-on subjects; the current app does not implement them all.

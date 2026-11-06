@@ -93,7 +93,7 @@ pub struct Edge {
     pub directed: bool,
     pub both: bool,
 }
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct Diagram {
     pub nodes: Vec<Node>,
     pub edges: Vec<Edge>,

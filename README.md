@@ -1,102 +1,111 @@
 # Rust DS Lab
 
-**See the structure. Predict the operation. Understand the rule.**
+**Understand the rule. Predict the next state. Watch it happen.**
 
-A Linux-only, local data structure learning app written entirely in Rust. It renders interactive SVG diagrams in your browser, with Python reference examples and a practice room. There are **zero external Rust crates**, no JavaScript, no Python runtime requirement, no accounts, and no external assets.
+An offline native desktop learning app written in Rust. Follow the 18-topic NeetCode-style roadmap, experiment with 16 core data structures, and step through worked solutions. The app uses egui/eframe with an OpenGL renderer: no browser, web server, HTML, CSS, JavaScript, Python runtime, or downloaded assets at runtime. Python examples remain embedded, readable reference text.
 
-## Run on Linux
+## Download one executable
 
-Prerequisites: Linux, Git, a stable Rust toolchain (Cargo + rustc), a system C linker, and a browser. Install Rust using the official instructions at <https://www.rust-lang.org/tools/install>. On Debian/Ubuntu, `build-essential` supplies the C linker and development tools.
+Open [Releases](https://github.com/harshvsisodiya/rust-ds-lab/releases) and download **one asset matching your OS and CPU**. Repository access is required while the repository is private. Builds appear only after the native build workflow succeeds.
 
-Clone and run:
+| Computer | File |
+|---|---|
+| Linux desktop, Intel/AMD 64-bit | `rust-ds-lab-linux-x86_64` |
+| Windows, Intel/AMD 64-bit | `rust-ds-lab-windows-x86_64.exe` |
+| macOS, Apple Silicon | `rust-ds-lab-macos-arm64` |
+| macOS, Intel | `rust-ds-lab-macos-x86_64` |
 
-```bash
+Windows: open the `.exe`. Linux/macOS: grant executable permission, then launch the downloaded file, for example:
+
+```sh
+chmod +x rust-ds-lab-linux-x86_64
+./rust-ds-lab-linux-x86_64
+```
+
+A single native executable cannot run unchanged across Windows, Linux and macOS. Each download contains the same Rust application compiled for that platform. No Rust installation is needed to run it. Normal OS windowing and graphics libraries are still required: Linux needs a graphical X11/Wayland session, OpenGL, xkbcommon and glibc 2.35 or newer. Builds use Ubuntu 22.04, Windows Server 2022 and the listed macOS runners; this is not a promise of support for every OS version, GPU or CPU architecture. Mobile, 32-bit and Linux/Windows ARM builds are not included. Downloads are not commercially signed or Apple-notarized; the OS may show its usual downloaded-app warning. `SHA256SUMS.txt` accompanies releases for integrity checking.
+
+## Explore
+
+1. Start at **Learning roadmap**. Zoom or scroll the connected graph and open a topic.
+2. Read **why**, **how**, **when**, **industry examples** and **historical context**. References distinguish documented milestones from uncertain origins.
+3. Open a structure lab. Build the example or enter up to 16 values. Inspect node roles, links, summaries, invariants and operation costs.
+4. Use Restart, Previous, Next, Play and Pause. Playback runs at 0.5–5 steps per second.
+5. Predict a practice answer before selecting **Reveal worked solution**. Read each computed state and its explanation.
+6. Mark a roadmap topic understood. Progress and input state last for this session only.
+
+The [Black Knight palette](https://colormagic.app/palette/671d791ce9810edeaccc93a1) uses `#000000`, `#1c1c1c`, `#3d3d3d`, `#7d7d7d`, and `#b0b0b0`; `#f2f2f2` improves text contrast. Highlighted nodes use light fills and dark text. Node roles and step explanations communicate meaning alongside shading.
+
+## Coverage
+
+The graph follows all **18 topics in the supplied NeetCode roadmap**: Arrays & Hashing, Two Pointers, Stack, Binary Search, Sliding Window, Linked List, Trees, Tries, Heap / Priority Queue, Backtracking, Graphs, 1-D Dynamic Programming, Intervals, Greedy, Advanced Graphs, 2-D Dynamic Programming, Bit Manipulation, and Math & Geometry. Several are algorithm techniques rather than data structures. [NeetCode](https://neetcode.io/roadmap) inspired the prerequisite graph; lesson prose, implementations and exercise inputs here are original and are not a copy of its paid question bank.
+
+| Structure lab | Operations and visible relationships |
+|---|---|
+| Dynamic array | Insert/remove/set; indexed slots |
+| Stack | Push/pop; top |
+| Queue | Enqueue/dequeue; front/back |
+| Deque | Push/pop both ends |
+| Singly linked list | Positional edits; successor links |
+| Doubly linked list | Positional edits; both link directions |
+| Circular linked list | Positional edits; tail-to-head link |
+| Hash map | Insert/update/remove; buckets and collisions |
+| Hash set | Add/remove; duplicate membership |
+| Binary search tree | Insert; ordered subtrees, ignored duplicates |
+| Min heap | Insert/extract minimum; parent rule, backing array |
+| Trie | Insert/remove words; shared prefixes, terminal markers |
+| Undirected graph | Add edges; adjacency relationships |
+| Disjoint set | Union; representatives and parent forest |
+| Fenwick tree | Set values; update links, partial and prefix sums |
+| Segment tree | Set values; interval hierarchy and subtree sums |
+
+“All data structures” has no finite universal list. This release implements these 16 core structures and all 18 requested roadmap categories. Specialized structures such as AVL/red-black/B-trees, skip lists and persistent structures are **not implemented**. The current Math & Geometry trace covers Euclid's GCD; it is not a geometry curriculum. Advanced Graphs demonstrates nonnegative-weight Dijkstra; it is not a complete advanced graph algorithms course.
+
+## Questions and visualization detail
+
+There are **10 worked cases per roadmap topic** (180) and **10 per structure** (160), with 3 easy, 4 medium and 3 hard cases in each set. These are structured variations on a core algorithm or operation sequence, **not 340 different interview problems**. Difficulty is relative to the lesson; harder cases add longer/mixed inputs, duplicate reasoning, invariant proofs and cost analysis.
+
+Roadmap traces compute frequency counts, two-pointer searches, bracket stacks, binary search intervals, rolling sums, list reversal, BST/heap insertions, trie paths, subset recursion, BFS, stairs DP, interval merging, greedy scheduling, Dijkstra, grid-path DP, bit counting and Euclid's algorithm. Answers are calculated by Rust, not prerecorded pictures. Tree/structure exercises preserve their native geometry.
+
+**Granularity:** structure replay shows each complete insertion or operation. It does not animate every heap swap or allocation. Algorithm traces show the selected algorithm's comparisons, queue visits, recursive states or DP updates. The explanations label that boundary. A mutation during partial replay branches from the visible prefix and discards its later items.
+
+## Efficiency and model boundaries
+
+- Native vector shapes and embedded fonts; no video, browser engine or network fetching.
+- Event-driven repainting. While idle, the app does not request continuous redraws. Timed repainting runs only during playback; window-system events and UI animations may still cause frames.
+- Only the selected exercise is generated and retained. Structure diagrams are cached until their input or replay step changes. Inputs and teaching trace sizes are bounded.
+- Release builds use size optimization, thin LTO, one codegen unit and stripped symbols. No multisampling. This reduces work but is not a measured CPU/GPU guarantee on every computer.
+- Linked diagrams model logical links with indexed sequences, not raw memory addresses. Hashing uses eight teaching buckets, not Rust's or Python's production layout. Editing range structures rebuilds a small teaching diagram; listed costs describe standard data structure operations, not rendering or model reconstruction.
+
+Numbers accept -9999..9999. Inputs use comma-separated numbers, `cat:7,dog:12` for a map, `cat,car` for a trie, and `A-B,B-C` for a graph/disjoint set. Blank input is valid. Words are 1–8 lowercase ASCII letters; other labels are 1–12 ASCII letters/digits/underscores. Empty comma fields are ignored. Duplicate entries count toward the 16-input limit even if the logical structure deduplicates them.
+
+## Build from source
+
+Install stable [Rust](https://rustup.rs) and the normal compiler/linker for your OS. On Debian/Ubuntu, install `build-essential pkg-config libxkbcommon-dev libgl1-mesa-dev`. Windows uses the Visual Studio C++ build tools; macOS uses Xcode command-line tools.
+
+```sh
 git clone https://github.com/harshvsisodiya/rust-ds-lab.git
 cd rust-ds-lab
-cargo run --release --offline --locked
+cargo run --release --locked
 ```
 
-Open **http://127.0.0.1:7878** in your browser. Stop the server with **Ctrl+C**.
+The first source build downloads the crates in `Cargo.lock`. Subsequent builds can use `--offline` after dependencies have been fetched. The executable itself runs offline. App source and logic are Rust; eframe uses platform APIs and the OS graphics driver, so “Rust application” does not mean every dependency in the OS is implemented in Rust.
 
-If the port is busy:
-
-```bash
-cargo run --release --offline --locked -- --port 8080
-```
-
-Once built, the executable can be run directly:
-
-```bash
-./target/release/rust-ds-lab
-```
-
-The runtime uses only Rust's standard library. The embedded HTML/CSS/SVG is presentation output generated by Rust; Python code is embedded reference text, not executed. No `.py` or JavaScript application source is included. The binary rejects non-Linux compilation.
-
-## What's included
-
-| Structure | Operations / visualization |
-|---|---|
-| Dynamic array | Insert/remove/set by index; indexed slots |
-| Stack | Push/pop; top highlighted |
-| Queue | Enqueue/dequeue; front and back |
-| Deque | Push/pop at both ends |
-| Singly linked list | Insert/remove by position; successor links |
-| Doubly linked list | Insert/remove by position; bidirectional links |
-| Circular linked list | Insert/remove by position; tail-to-head link |
-| Hash map | Insert/update/remove keys; buckets and collisions |
-| Hash set | Add/remove keys; deduplicated membership |
-| Binary search tree | Insert; unbalanced tree layout; duplicates ignored |
-| Min heap | Push/pop minimum; tree and backing array |
-| Trie | Insert/remove words; shared prefixes and word endings |
-| Undirected graph | Add edges; nodes, edges, and adjacency list |
-| Disjoint set | Union pairs; parent forest and representatives |
-| Fenwick tree | Edit values; partial sums, update links, every prefix sum |
-| Segment tree | Edit values; range partitions and subtree sums |
-
-These are **16 common core structures**, not every specialized structure in computer science. AVL/red-black/B-trees, skip lists, persistent structures, and others are future extensions. The project focuses on structures and their operations rather than a general sorting/algorithm gallery.
-
-## Use the lab
-
-1. Pick a structure in the sidebar.
-2. Edit the comma-separated input and click **Build sequence**.
-3. Click **Restart**, then **Next** to see each completed insertion. **Previous** revisits earlier prefixes.
-4. Try an operation using the value and, where applicable, a zero-based index.
-5. Read the invariant, complexity, and Python equivalent.
-6. Predict the challenge answer before revealing its explanation.
-
-**Replay granularity:** each step is one complete insertion, not each pointer change, heap swap, or recursion call. An operation on a partial replay branches from the currently visible prefix; later items are discarded from that new sequence. After a removal/update, replay builds the resulting sequence. The browser Back button restores earlier URL states.
-
-**Examples:** `12,7,24` for numbers, `cat:7,dog:12` for a map, `cat,car` for a trie, and `A-B,B-C` for a graph or disjoint set. Blank input creates an empty structure. Numeric values are restricted to -9999..9999. Diagrams accept up to 16 input items; words use 1–8 lowercase ASCII letters, other labels 1–12 ASCII letters/digits/underscores. Empty comma-separated fields are ignored.
-
-**Model notes:** linked-list diagrams use an indexed sequence to represent logical links, rather than allocating raw linked nodes. Rust BST, heap, trie, Fenwick, and union-find logic is implemented explicitly. Graphs use ordered adjacency sets. Hash diagrams use a fixed eight-bucket teaching hash with separate chaining, not Python's or Rust's production hash layout. Set/map duplicate inputs count toward the input limit even when they collapse to one entry. Range-tree edits rebuild the visualization; the displayed complexity describes the standard data structure operation, not HTTP page rendering. Python examples are standalone and do not change with user input.
-
-## Practice / additional learning
-
-Open **Practice room** for 16 prediction questions with explanations. Follow [the study plan](docs/LEARNING.md) for a seven-session progression and deeper challenges. Progress is self-assessed and not stored.
-
-## Verify
-
-```bash
+```sh
 cargo fmt --check
-cargo clippy --offline --all-targets -- -D warnings
-cargo test --offline --locked
-cargo build --release --offline --locked
+cargo clippy --locked --all-targets -- -D warnings
+cargo test --locked
+cargo build --release --locked
 ```
 
-Tests cover heap ordering, BST invariants, duplicate/collision behavior, linked-sequence operations, union-find connectivity, trie terminals, graph edges, Fenwick/segment sums, replay branching, HTML escaping, malformed input, and the real HTTP server. CI runs on Linux.
+Tests cover data structure invariants and edits, malformed/oversized input, trace bounds, independently known answers, and rendering each actual native view at two viewport sizes without a display. Native builds run those checks for each target. These tests do not replace a manual GPU/window-system compatibility test on every supported computer.
 
-## Architecture
+## Source map
 
-- `src/model.rs`: validated inputs, deterministic data structure models and diagram geometry.
-- `src/catalog.rs`: explanations, invariants, complexity, challenges, Python reference text.
-- `src/web.rs`: server-rendered forms, SVG, HTML and embedded CSS; no client-side scripts.
-- `src/main.rs`: bounded localhost HTTP server with read/write timeouts.
-- `tests/`: structure and HTTP integration tests.
+- `model.rs`: validation, deterministic structures, operations and layout geometry.
+- `catalog.rs` / `background.rs`: structure references, examples and context.
+- `curriculum.rs`: roadmap lessons and prerequisite edges.
+- `practice.rs`: executable worked traces and calculated answers.
+- `desktop.rs` / `main.rs`: native UI and window entry point.
+- `.github/workflows/ci.yml`: four native builds, checksums and versioned GitHub releases. Existing version assets are preserved; bump `Cargo.toml` to publish a new release.
 
-The server binds **127.0.0.1 only**. It is a small sequential teaching server, not a production web framework. It has no file-write endpoints, does not execute submitted code, and sends no data externally. State lives in the current URL; different tabs are independent. Do not put private data into teaching examples. No background process is installed.
-
-## Contribute
-
-Add a topic, define its validation/model/operations, include a Python example and invariant, and test an empty case, a duplicate case, and a nontrivial sequence. Keep application code in Rust, avoid new runtime dependencies, and retain Linux support.
-
-MIT licensed. See [LICENSE](LICENSE).
+See [LEARNING.md](docs/LEARNING.md) for drills and [RELEASE.md](docs/RELEASE.md) for this release's boundaries. MIT licensed; see [LICENSE](LICENSE).
