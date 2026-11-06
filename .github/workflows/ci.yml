@@ -23,7 +23,7 @@ jobs:
             target: x86_64-pc-windows-msvc
             asset: rust-ds-lab-windows-x86_64.exe
             binary: rust-ds-lab.exe
-          - os: macos-14
+          - os: macos-15
             target: aarch64-apple-darwin
             asset: rust-ds-lab-macos-arm64
             binary: rust-ds-lab
@@ -85,3 +85,4 @@ jobs:
           (cd dist && sha256sum rust-ds-lab-* > SHA256SUMS.txt)
           gh release create "$tag" dist/* --target "$GITHUB_SHA" --title "Rust DS Lab $version — native desktop" --notes-file docs/RELEASE.md --draft
           gh release edit "$tag" --draft=false
+
