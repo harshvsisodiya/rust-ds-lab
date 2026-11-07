@@ -229,11 +229,11 @@ pub(super) fn kmp(input: &str, e: &mut Exercise) -> Result<(), String> {
         || pattern.contains('|')
         || input.chars().any(char::is_control)
     {
-        return Err(
-            "Use visible ASCII text (up to 48 characters) and a nonempty pattern (up \
-                        to 16), separated by |."
-                .into(),
-        );
+        return Err(concat!(
+            "Use visible ASCII text (up to 48 characters) and a nonempty ",
+            "pattern (up to 16), separated by |."
+        )
+        .into());
     }
     let t = text.as_bytes();
     let p = pattern.as_bytes();

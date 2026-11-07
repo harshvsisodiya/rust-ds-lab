@@ -1,83 +1,53 @@
 use super::*;
-
 fn draw(ctx: &egui::Context, lab: &mut Lab, size: [f32; 2]) -> egui::FullOutput {
     ctx.run(
         egui::RawInput {
             time: Some(ctx.cumulative_pass_nr() as f64 * 0.5),
-
             screen_rect: Some(Rect::from_min_size(Pos2::ZERO, Vec2::from(size))),
-
             ..Default::default()
         },
         |ctx| lab.show(ctx),
     )
 }
-
 #[test]
 fn all_native_views_render_at_small_and_large_sizes() {
     let ctx = egui::Context::default();
-
     let mut lab = Lab::with_context(&ctx);
-
     lab.storage.progress.reduced_motion = true;
-
     for size in [[800.0, 600.0], [1280.0, 860.0]] {
         let check = |lab: &mut Lab| {
             let o = draw(&ctx, lab, size);
-
             assert!(!ctx.tessellate(o.shapes, o.pixels_per_point).is_empty());
         };
-
         for v in [View::Home, View::Library, View::Roadmap] {
             lab.nav.view = v;
-
             check(&mut lab);
         }
-
         for i in 0..LESSONS.len() {
             lab.select_lesson(i);
-
             check(&mut lab);
-
             lab.nav.tab = Tab::Playground;
-
             check(&mut lab);
-
             lab.start_practice(false);
-
             lab.study.reveal = true;
-
             check(&mut lab);
-
             lab.playback.step = lab.study.exercise.frames.len() - 1;
-
             check(&mut lab);
         }
-
         for i in 0..TOPICS.len() {
             lab.select_structure(i);
-
             for tab in [Tab::Understand, Tab::Playground, Tab::Code] {
                 lab.nav.tab = tab;
-
                 check(&mut lab);
             }
-
             lab.start_practice(true);
-
             lab.study.case = 9;
-
             lab.load_exercise();
-
             lab.study.reveal = true;
-
             check(&mut lab);
-
             lab.playback.step = lab.study.exercise.frames.len() - 1;
-
             check(&mut lab);
         }
-
         for i in 0..crate::extras::TOPICS.len() {
             lab.select_extra(i);
             for tab in [Tab::Understand, Tab::Playground, Tab::Code] {
@@ -89,33 +59,22 @@ fn all_native_views_render_at_small_and_large_sizes() {
         }
         for i in 0..4 {
             lab.nav.tutorial = Some(i);
-
             check(&mut lab);
         }
-
         lab.nav.tutorial = None;
     }
 }
-
 #[test]
 fn navigation_stops_playback_and_example_inputs_are_valid() {
     let ctx = egui::Context::default();
-
     let mut lab = Lab::with_context(&ctx);
-
     for (i, t) in TOPICS.iter().enumerate() {
         lab.playback.play = true;
-
         lab.select_structure(i);
-
         assert!(!lab.playback.play);
-
         assert_eq!(lab.nav.tab, Tab::Understand);
-
         assert!(model::validate(t.id, &lab.editor.items).is_ok());
-
         lab.action("insert");
-
         assert!(
             !lab.editor.message.contains("must"),
             "{}: {}",
@@ -123,31 +82,21 @@ fn navigation_stops_playback_and_example_inputs_are_valid() {
             lab.editor.message
         );
     }
-
     lab.playback.play = true;
-
     lab.select_lesson(3);
-
     assert_eq!(lab.playback.step, 0);
-
     assert!(!lab.playback.play);
 }
-
 #[test]
 fn real_buttons_navigate_and_idle_views_stop_repainting() {
     let ctx = egui::Context::default();
-
     let mut lab = Lab::with_context(&ctx);
-
     lab.storage.progress.reduced_motion = true;
-
     let click = |lab: &mut Lab, text: &str| {
         let mut output = draw(&ctx, lab, [1280.0, 900.0]);
-
         for _ in 0..3 {
             output = draw(&ctx, lab, [1280.0, 900.0]);
         }
-
         let pos = output
             .shapes
             .iter()
@@ -157,80 +106,55 @@ fn real_buttons_navigate_and_idle_views_stop_repainting() {
                         return Some(t.pos + t.galley.rect.center().to_vec2());
                     }
                 }
-
                 None
             })
             .unwrap_or_else(|| panic!("missing visible control: {text}"));
-
         let _ = ctx.run(
             egui::RawInput {
                 screen_rect: Some(Rect::from_min_size(Pos2::ZERO, Vec2::new(1280.0, 900.0))),
-
                 time: Some(ctx.cumulative_pass_nr() as f64 * 0.5),
-
                 events: vec![
                     egui::Event::PointerMoved(pos),
                     egui::Event::PointerButton {
                         pos,
-
                         button: egui::PointerButton::Primary,
-
                         pressed: true,
-
                         modifiers: egui::Modifiers::NONE,
                     },
                     egui::Event::PointerButton {
                         pos,
-
                         button: egui::PointerButton::Primary,
-
                         pressed: false,
-
                         modifiers: egui::Modifiers::NONE,
                     },
                 ],
-
                 ..Default::default()
             },
             |ctx| lab.show(ctx),
         );
     };
-
     click(&mut lab, "Continue learning  →");
-
     assert_eq!(lab.nav.view, View::Lesson);
-
     click(&mut lab, "02  Visual walkthrough");
-
     assert_eq!(lab.nav.tab, Tab::Playground);
-
     click(&mut lab, "Next →");
-
     assert_eq!(lab.playback.step, 1);
-
     click(&mut lab, "Start here");
-
     assert_eq!(lab.nav.view, View::Home);
-
     let mut output = draw(&ctx, &mut lab, [1280.0, 900.0]);
-
     for _ in 0..10 {
         output = draw(&ctx, &mut lab, [1280.0, 900.0]);
     }
-
     assert!(
         output.viewport_output[&egui::ViewportId::ROOT].repaint_delay > Duration::from_millis(100)
     );
 }
-
 /// Exports real egui meshes and font atlas for offline visual review.
 #[test]
 #[ignore]
 fn export_native_previews() {
     let dir = std::env::var("DS_LAB_PREVIEW").expect("set DS_LAB_PREVIEW");
-
     std::fs::create_dir_all(&dir).unwrap();
-
     for name in [
         "home",
         "lesson",
@@ -252,11 +176,8 @@ fn export_native_previews() {
         "small_sorting",
     ] {
         let ctx = egui::Context::default();
-
         let mut lab = Lab::with_context(&ctx);
-
         lab.storage.progress.reduced_motion = true;
-
         match name {
             "sorting" | "small_sorting" => {
                 lab.select_extra(3);
@@ -290,69 +211,46 @@ fn export_native_previews() {
                 for stage in 0..3 {
                     lab.storage.progress.set(0, stage, true);
                 }
-
                 lab.storage.progress.set(1, 0, true);
             }
-
             "small_lab" => {
                 lab.select_structure(9);
-
                 lab.nav.tab = Tab::Playground;
             }
-
             "small_tour" => lab.nav.tutorial = Some(3),
-
             "lesson" => lab.select_lesson(3),
-
             "playground" => {
                 lab.select_structure(9);
-
                 lab.nav.tab = Tab::Playground;
             }
-
             "practice" => {
                 lab.select_lesson(3);
-
                 lab.start_practice(false);
-
                 lab.study.reveal = true;
-
                 lab.playback.step = 1;
             }
-
             "library" => lab.nav.view = View::Library,
-
             "roadmap" => lab.nav.view = View::Roadmap,
-
             "tour" => lab.nav.tutorial = Some(0),
-
             _ => (),
         }
-
         let size = if name.starts_with("small") {
             [800.0, 600.0]
         } else {
             [1280.0, 900.0]
         };
-
         let mut textures = Vec::new();
-
         let mut meshes = Vec::new();
-
         for _ in 0..3 {
             let output = draw(&ctx, &mut lab, size);
-
             for (id, delta) in output.textures_delta.set {
                 let (w, h) = (delta.image.width(), delta.image.height());
-
                 let pixels: Vec<[u8; 4]> = match &delta.image {
                     egui::ImageData::Color(im) => im.pixels.iter().map(|c| c.to_array()).collect(),
-
                     egui::ImageData::Font(im) => {
                         im.srgba_pixels(None).map(|c| c.to_array()).collect()
                     }
                 };
-
                 textures.push(serde_json::json!({
                 "id":format!("{id:?}"),
                 "w":w,
@@ -361,7 +259,6 @@ fn export_native_previews() {
                 "pixels":pixels}
                 ));
             }
-
             meshes = ctx
                 .tessellate(output.shapes, output.pixels_per_point)
                 .into_iter()
@@ -390,7 +287,6 @@ fn export_native_previews() {
                 })
                 .collect();
         }
-
         std::fs::write(
             format!("{dir}/{name}.json"),
             serde_json::to_vec(&serde_json::json!({
@@ -403,7 +299,6 @@ fn export_native_previews() {
         .unwrap();
     }
 }
-
 #[test]
 fn session_round_trip_restores_custom_input_case_and_paused_playback() {
     let ctx = egui::Context::default();
@@ -526,4 +421,91 @@ fn shortcuts_step_pause_search_and_respect_text_input() {
     ctx.memory_mut(|m| m.request_focus(egui::Id::new("typing")));
     key(&mut lab, egui::Key::ArrowRight, egui::Modifiers::NONE);
     assert_eq!(lab.playback.step, 1);
+}
+
+#[test]
+#[ignore]
+fn native_scroll_profile() {
+    let ctx = egui::Context::default();
+    let mut lab = Lab::with_context(&ctx);
+    lab.storage.progress.reduced_motion = true;
+    lab.select_lesson(3);
+    let mut samples = Vec::new();
+    let mut vertices = 0;
+    for i in 0..540 {
+        let start = Instant::now();
+        let output = ctx.run(
+            egui::RawInput {
+                time: Some(i as f64 / 60.0),
+                screen_rect: Some(Rect::from_min_size(Pos2::ZERO, Vec2::new(1280.0, 900.0))),
+                events: vec![
+                    egui::Event::PointerMoved(Pos2::new(1000.0, 650.0)),
+                    egui::Event::MouseWheel {
+                        unit: egui::MouseWheelUnit::Point,
+                        delta: Vec2::new(0.0, if (i / 90) % 2 == 0 { -24.0 } else { 24.0 }),
+                        modifiers: egui::Modifiers::NONE,
+                    },
+                ],
+                ..Default::default()
+            },
+            |ctx| lab.show(ctx),
+        );
+        let count: usize = ctx
+            .tessellate(output.shapes, output.pixels_per_point)
+            .iter()
+            .map(|p| match &p.primitive {
+                egui::epaint::Primitive::Mesh(m) => m.vertices.len(),
+                _ => 0,
+            })
+            .sum();
+        if i >= 60 {
+            samples.push(start.elapsed().as_secs_f64() * 1000.0);
+            vertices += count;
+        }
+    }
+    samples.sort_by(f64::total_cmp);
+    eprintln!(
+        "SCROLL_PROFILE median_ms={:.3} p95_ms={:.3} mean_vertices={}",
+        samples[samples.len() / 2],
+        samples[samples.len() * 95 / 100],
+        vertices / samples.len()
+    );
+}
+
+#[test]
+fn playback_controls_fit_small_windows_and_stay_visible_while_scrolling() {
+    let ctx = egui::Context::default();
+    let mut lab = Lab::with_context(&ctx);
+    lab.select_extra(3);
+    lab.nav.tab = Tab::Playground;
+    lab.storage.progress.reduced_motion = true;
+    for scroll in [0.0, 350.0, 800.0] {
+        lab.nav.scroll = scroll;
+        lab.nav.restore_scroll = true;
+        let mut output = draw(&ctx, &mut lab, [800.0, 600.0]);
+        for _ in 0..3 {
+            output = draw(&ctx, &mut lab, [800.0, 600.0]);
+        }
+        for name in ["Next →", "Reset", "Search everything  Ctrl/⌘ K"] {
+            let rect = output
+                .shapes
+                .iter()
+                .find_map(|s| {
+                    if let egui::Shape::Text(t) = &s.shape {
+                        if t.galley.job.text == name {
+                            return Some(t.galley.rect.translate(t.pos.to_vec2()));
+                        }
+                    }
+                    None
+                })
+                .unwrap_or_else(|| panic!("control missing: {name}"));
+            assert!(
+                rect.min.x >= 0.0
+                    && rect.max.x <= 800.0
+                    && rect.min.y >= 0.0
+                    && rect.max.y <= 600.0,
+                "{name}: {rect:?}"
+            );
+        }
+    }
 }

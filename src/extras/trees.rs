@@ -139,9 +139,11 @@ fn llrb(node: Option<Box<Node>>, key: i64, events: &mut Vec<(Box<Node>, String)>
         }
         events.push((
             n.clone(),
-            "Local subtree: flip colors to split a temporary 4-node. Root blackening \
-                        follows insertion."
-                .into(),
+            concat!(
+                "Local subtree: flip colors to split a temporary 4-node. Root ",
+                "blackening follows insertion."
+            )
+            .into(),
         ));
     }
     update(&mut n);

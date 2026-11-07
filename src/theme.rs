@@ -81,6 +81,7 @@ pub fn apply(ctx: &egui::Context) {
     s.spacing.interact_size.y = 36.0;
     s.spacing.slider_width = 100.0;
     s.animation_time = 0.18;
+    s.wrap_mode = Some(egui::TextWrapMode::Wrap);
     for (style, size) in [
         (egui::TextStyle::Body, 15.0),
         (egui::TextStyle::Button, 14.0),

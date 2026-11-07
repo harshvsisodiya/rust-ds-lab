@@ -1,13 +1,12 @@
-# Rust DS Lab 0.3.0 — a calmer way to learn
+# Rust DS Lab 0.4.0 — clearer, quicker, easier to resume
 
-A redesigned native Rust desktop interface with warm cream surfaces and the supplied taupe, sage, beige and pale-blue palette.
+- Refined creamy theme with embedded Inter typography, stronger contrast, distinct paper surfaces and an explicit error color. Animated sorting bars make swaps and ordering easier to follow.
+- Less work while scrolling: cached walkthrough diagrams, off-screen paint culling, visible-region grids and virtualized code rows. Diagrams no longer compete with the page for vertical scrolling. Playback controls stay accessible above lesson content.
+- Ctrl/Cmd+K topic search, Left/Right/Space playback shortcuts, Alt+Left/Right page history, text-size control and session resume. Reopening restores the current exercise, custom input, prediction, step, speed and scroll position, paused.
+- Six sorting labs: bubble, insertion, selection, merge, quick and heap sort. AVL, left-leaning red-black and minimum-degree-2 B-tree insertion. LRU cache, monotonic stack, Kahn topological sort and KMP string matching. Each has explanations, context, computed traces, ten variations and checkpoints.
+- Rust code tabs and 28 standalone examples exercised by tests; Python references remain available for the 16 core structures.
+- Safe direct model construction: malformed pairs return an error diagram or a `Result` error instead of panicking. Fonts use embedded asset files. The former monolithic app state is separated into navigation, study, playback, editor, storage and rendering state.
 
-- Clear start page, searchable library, breadcrumbs and a four-step first-use tour.
-- Understand, Visualize and Practice checkpoints for all 18 roadmap topics and 16 structure labs. Progress persists locally; the home page highlights the most recently completed topic and suggests the next unfinished lesson.
-- Separate explanation, playground and Python-reference sections. Lessons include computed visual snapshots, historical/industry context, invariants and illustrative complexity charts.
-- Smooth 280 ms state transitions, adjustable step playback and a reduced-motion setting. Rendering is event-driven and transitions stop when settled.
-- 10 worked variations per roadmap topic and per structure, with space to write a prediction before opening the explanation.
+Download one executable matching your OS and CPU: Linux x86_64, Windows x86_64, macOS Apple Silicon or macOS Intel. No browser, Rust installation or Python runtime is required. Linux needs a graphical desktop, OpenGL/xkbcommon and glibc 2.35+. Downloads are unsigned and not Apple-notarized. SHA256SUMS.txt accompanies the four executables.
 
-Download one executable matching your OS and CPU: Linux x86_64, Windows x86_64, macOS Apple Silicon or macOS Intel. No browser, Rust installation or Python runtime is required. The downloads use native platform libraries; they are unsigned and not Apple-notarized. Linux requires a graphical desktop, OpenGL/xkbcommon and glibc 2.35+. SHA256SUMS.txt accompanies the four executables.
-
-Checkpoints are self-assessed, not automatically graded. This remains 16 core structures and 18 roadmap categories, with 340 variations of core methods rather than 340 unrelated interview problems. Structure replay shows completed operations, not every allocation or heap swap. See README for exact coverage and OS limitations.
+The 47 learning units contain 470 variations of core methods, not 470 unrelated interview problems. Checkpoints are self-assessed and existing v0.3 progress migrates automatically. Balanced-tree labs cover insertion only. KMP uses bounded ASCII input; the tiny LRU teaching sequence is O(capacity), distinct from a production O(1) hash-map/list cache. Performance changes reduce UI work but are not a guarantee for every graphics driver. See README for precise coverage and input limits.

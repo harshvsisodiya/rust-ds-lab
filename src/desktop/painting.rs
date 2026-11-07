@@ -301,86 +301,76 @@ pub(super) fn draw_diagram(
     }
 }
 pub(super) fn complexity(ui: &mut egui::Ui, cost: &str) {
-    card().show(ui,
-|ui| {
-  ui.set_width(ui.available_width());
-eyebrow(ui,
-"HOW THE WORK GROWS");
-ui.heading("Time & space, in plain terms.");
-ui.label(cost);
-muted(ui,
-"n is the amount of input. O(1) stays roughly constant; O(log n) grows slowly; O(n) visits a proportional \
-                        amount of data. Space measures extra memory.");
-
-  let (r,
-_)=ui.allocate_exact_size(Vec2::new(ui.available_width(),
-200.0),
-egui::Sense::hover());
-let plot=r.shrink2(Vec2::new(35.0,
-30.0));
-let p=ui.painter();
-p.line_segment([plot.left_top(),
-plot.left_bottom()],
-Stroke::new(1.0_f32,
-GRAY));
-p.line_segment([plot.left_bottom(),
-plot.right_bottom()],
-Stroke::new(1.0_f32,
-GRAY));
-
-  for (kind,
-color) in [(0,
-SAGE),
-(1,
-TAUPE),
-(2,
-MUTED)] {
-let points:Vec<_>=(0..50).map(|i| {
-let x=i as f32/49.0;
-let y=match kind {
-0=>0.12,
-1=>(1.0+x*15.0).log2()/5.0,
-_=>x*0.95}
-;
-Pos2::new(plot.left()+x*plot.width(),
-plot.bottom()-y*plot.height())}
-).collect();
-p.add(egui::Shape::line(points,
-Stroke::new(2.5_f32,
-color)));
+    card().show(ui, |ui| {
+        ui.set_width(ui.available_width());
+        eyebrow(ui, "HOW THE WORK GROWS");
+        ui.heading("Time & space, in plain terms.");
+        ui.label(cost);
+        muted(
+            ui,
+            concat!(
+                "n is the amount of input. O(1) stays roughly constant; O(log n) ",
+                "grows slowly; O(n) visits a proportional amount of data. Space ",
+                "measures extra memory."
+            ),
+        );
+        let (r, _) =
+            ui.allocate_exact_size(Vec2::new(ui.available_width(), 200.0), egui::Sense::hover());
+        let plot = r.shrink2(Vec2::new(35.0, 30.0));
+        let p = ui.painter();
+        p.line_segment(
+            [plot.left_top(), plot.left_bottom()],
+            Stroke::new(1.0_f32, GRAY),
+        );
+        p.line_segment(
+            [plot.left_bottom(), plot.right_bottom()],
+            Stroke::new(1.0_f32, GRAY),
+        );
+        for (kind, color) in [(0, SAGE), (1, TAUPE), (2, MUTED)] {
+            let points: Vec<_> = (0..50)
+                .map(|i| {
+                    let x = i as f32 / 49.0;
+                    let y = match kind {
+                        0 => 0.12,
+                        1 => (1.0 + x * 15.0).log2() / 5.0,
+                        _ => x * 0.95,
+                    };
+                    Pos2::new(
+                        plot.left() + x * plot.width(),
+                        plot.bottom() - y * plot.height(),
+                    )
+                })
+                .collect();
+            p.add(egui::Shape::line(points, Stroke::new(2.5_f32, color)));
+        }
+        p.text(
+            r.left_top() + Vec2::new(0.0, 3.0),
+            Align2::LEFT_TOP,
+            "Relative work",
+            FontId::proportional(11.0),
+            MUTED,
+        );
+        p.text(
+            r.right_bottom(),
+            Align2::RIGHT_BOTTOM,
+            "Input size →",
+            FontId::proportional(11.0),
+            MUTED,
+        );
+        ui.horizontal_wrapped(|ui| {
+            badge(ui, "O(1) · constant", SOFT_GREEN);
+            badge(ui, "O(log n) · logarithmic", BEIGE);
+            badge(ui, "O(n) · linear", BLUE);
+        });
+        muted(
+            ui,
+            concat!(
+                "Illustrative growth curves, not benchmarks. The operation costs ",
+                "above describe this lesson; the chart compares common growth rates."
+            ),
+        );
+    });
 }
-
-  p.text(r.left_top()+Vec2::new(0.0,
-3.0),
-Align2::LEFT_TOP,
-"Relative work",
-FontId::proportional(11.0),
-MUTED);
-p.text(r.right_bottom(),
-Align2::RIGHT_BOTTOM,
-"Input size →",
-FontId::proportional(11.0),
-MUTED);
-
-  ui.horizontal_wrapped(|ui| {
-badge(ui,
-"O(1) · constant",
-SOFT_GREEN);
-badge(ui,
-"O(log n) · logarithmic",
-BEIGE);
-badge(ui,
-"O(n) · linear",
-BLUE);
-}
-);
-muted(ui,
-"Illustrative growth curves, not benchmarks. The operation costs above describe this lesson; the chart compares common growth rates.");
-
- }
-);
-}
-
 pub(super) fn error_message(ui: &mut egui::Ui, message: &str) {
     egui::Frame::new()
         .fill(ERROR_FILL)
@@ -391,17 +381,13 @@ pub(super) fn error_message(ui: &mut egui::Ui, message: &str) {
             ui.label(RichText::new(format!("Input error: {message}")).color(ERROR_TEXT));
         });
 }
-
 pub(super) fn code_panel(ui: &mut egui::Ui, code: &str, description: &str) {
     muted(ui, description);
-
     if ui.button("Copy code").clicked() {
         ui.ctx().copy_text(code.to_string());
     }
-
     // Virtual rows avoid laying out hundreds of off-screen source lines.
     let lines: Vec<_> = code.lines().collect();
-
     egui::Frame::new()
         .fill(PAPER)
         .stroke(Stroke::new(1.0_f32, LINE))
@@ -419,43 +405,32 @@ pub(super) fn code_panel(ui: &mut egui::Ui, code: &str, description: &str) {
                                     .monospace()
                                     .color(MUTED),
                             );
-
                             ui.label(RichText::new(lines[row]).monospace().color(INK));
                         });
                     }
                 });
         });
 }
-
 pub(super) fn draw_scene(
     ui: &mut egui::Ui,
-
     scene: &mut Scene,
-
     diagram: &model::Diagram,
-
     key: String,
-
     reduced: bool,
 ) {
     if scene.key != key {
         scene.old = std::mem::replace(&mut scene.current, diagram.clone());
-
         scene.key = key;
-
         scene.transition = Instant::now();
     }
-
     let t = if reduced {
         1.0
     } else {
         (scene.transition.elapsed().as_secs_f32() / 0.22).min(1.0)
     };
-
     if t < 1.0 {
         ui.ctx().request_repaint_after(Duration::from_millis(16));
     }
-
     egui::ScrollArea::horizontal()
         .id_salt("active_canvas")
         .show(ui, |ui| {
@@ -468,40 +443,37 @@ pub(super) fn draw_scene(
             );
         });
 }
-
 fn draw_bars(ui: &mut egui::Ui, d: &model::Diagram, old: Option<&model::Diagram>, t: f32) {
     let width = ui.available_width().max(280.0);
-
-    let (rect, _) = ui.allocate_exact_size(Vec2::new(width, 290.0), egui::Sense::hover());
-
+    let (rect, _) = ui.allocate_exact_size(
+        Vec2::new(
+            width,
+            if ui.ctx().screen_rect().height() < 700.0 {
+                210.0
+            } else {
+                290.0
+            },
+        ),
+        egui::Sense::hover(),
+    );
     if !ui.is_rect_visible(rect) {
         return;
     }
-
     let p = ui.painter().with_clip_rect(rect.intersect(ui.clip_rect()));
-
     p.rect_filled(rect, 12.0, CREAM);
-
     let values: Vec<f32> = d
         .nodes
         .iter()
         .filter_map(|n| n.label.parse().ok())
         .collect();
-
     let min = values.iter().copied().fold(f32::INFINITY, f32::min);
-
     let max = values.iter().copied().fold(f32::NEG_INFINITY, f32::max);
-
     let step = (width - 36.0) / d.nodes.len().max(1) as f32;
-
     let bar_width = (step - 10.0).clamp(15.0, 62.0);
-
     for (i, n) in d.nodes.iter().enumerate() {
         let value = values[i];
-        let h = 45.0 + (value - min) / (max - min).max(1.0) * 150.0;
-
+        let h = 30.0 + (value - min) / (max - min).max(1.0) * (rect.height() - 140.0);
         let occurrence = d.nodes[..i].iter().filter(|v| v.label == n.label).count();
-
         let before = old
             .filter(|d| d.nodes.first().is_some_and(|n| n.note.starts_with("bar")))
             .and_then(|d| {
@@ -513,17 +485,13 @@ fn draw_bars(ui: &mut egui::Ui, d: &model::Diagram, old: Option<&model::Diagram>
                     .map(|(i, _)| i)
             })
             .unwrap_or(i);
-
         let x =
             rect.left() + 18.0 + ((before as f32 + (i as f32 - before as f32) * t) + 0.5) * step;
-
         let r = Rect::from_min_size(
             Pos2::new(x - bar_width / 2.0, rect.bottom() - 52.0 - h),
             Vec2::new(bar_width, h),
         );
-
         p.rect_filled(r, 8.0, if n.active { BLUE } else { SAGE });
-
         p.text(
             r.center_top() - Vec2::new(0.0, 8.0),
             Align2::CENTER_BOTTOM,
@@ -531,7 +499,6 @@ fn draw_bars(ui: &mut egui::Ui, d: &model::Diagram, old: Option<&model::Diagram>
             FontId::monospace(16.0),
             TAUPE,
         );
-
         p.text(
             Pos2::new(x, rect.bottom() - 41.0),
             Align2::CENTER_TOP,
@@ -540,7 +507,6 @@ fn draw_bars(ui: &mut egui::Ui, d: &model::Diagram, old: Option<&model::Diagram>
             MUTED,
         );
     }
-
     p.text(
         rect.center_bottom() - Vec2::new(0.0, 10.0),
         Align2::CENTER_BOTTOM,
