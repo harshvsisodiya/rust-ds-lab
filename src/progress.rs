@@ -7,16 +7,18 @@ use std::{
 pub struct Progress {
     pub welcomed: bool,
     pub reduced_motion: bool,
-    pub checkpoints: [u8; 34],
+    pub checkpoints: [u8; 47],
     pub recent: Option<usize>,
+    pub session: String,
 }
 impl Default for Progress {
     fn default() -> Self {
         Self {
             welcomed: false,
             reduced_motion: false,
-            checkpoints: [0; 34],
+            checkpoints: [0; 47],
             recent: None,
+            session: String::new(),
         }
     }
 }
@@ -25,7 +27,7 @@ impl Progress {
         self.checkpoints[i] == 7
     }
     pub fn set(&mut self, i: usize, stage: usize, done: bool) {
-        if i >= 34 || stage >= 3 {
+        if i >= 47 || stage >= 3 {
             return;
         }
         let before = self.completed(i);
@@ -43,19 +45,25 @@ impl Progress {
     }
     pub fn encode(&self) -> String {
         format!(
-            "version=1\nwelcomed={}\nmotion={}\ncheckpoints={}\nrecent={}\n",
+            "version=1\nwelcomed={}\nmotion={}\ncheckpoints={}\nrecent={}\nsession={}\n",
             u8::from(self.welcomed),
             u8::from(self.reduced_motion),
             self.checkpoints
                 .iter()
                 .map(|v| char::from(b'0' + v))
                 .collect::<String>(),
-            self.recent.map(|i| i.to_string()).unwrap_or_default()
+            self.recent.map(|i| i.to_string()).unwrap_or_default(),
+            self.session
         )
     }
     pub fn decode(text: &str) -> Self {
         let mut p = Self::default();
-        for line in text.lines() {
+        for line in text.lines().take(12) {
+            if let Some(session) = line.strip_prefix("session=") {
+                if session.len() <= 16000 {
+                    p.session = session.into();
+                }
+            }
             if line == "welcomed=1" {
                 p.welcomed = true;
             }
@@ -63,12 +71,12 @@ impl Progress {
                 p.reduced_motion = true;
             }
             if let Some(bits) = line.strip_prefix("checkpoints=") {
-                for (i, c) in bits.chars().take(34).enumerate() {
+                for (i, c) in bits.chars().take(47).enumerate() {
                     p.checkpoints[i] = c.to_digit(8).unwrap_or(0) as u8;
                 }
             }
             if let Some(s) = line.strip_prefix("recent=") {
-                p.recent = s.parse::<usize>().ok().filter(|i| *i < 34);
+                p.recent = s.parse::<usize>().ok().filter(|i| *i < 47);
             }
         }
         if p.recent.is_some_and(|i| !p.completed(i)) {
@@ -132,7 +140,6 @@ mod tests {
         assert_eq!(Progress::load(&path), p);
         std::fs::remove_dir_all(dir).unwrap();
     }
-
     #[test]
     fn checkpoints_round_trip_and_recent_completion() {
         let mut p = Progress::default();

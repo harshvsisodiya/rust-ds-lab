@@ -8,115 +8,264 @@ pub struct Background {
 }
 pub const BACKGROUNDS: &[Background] = &[
     Background {
-        why: "A program needs a compact sequence whose fifth item can be reached directly. Adjacent slots avoid walking a chain of links. A dynamic array adds spare capacity so it can grow; occasionally it must allocate a larger region and copy the elements.",
-        when: "Choose it for indexed reads and iteration. Appending is cheap on average, but inserting near the front shifts later values. If stable addresses or frequent middle edits matter, compare other representations.",
-        industry: "An image keeps rows of pixel values in contiguous memory. A sensor dashboard stores recent samples in a buffer. Nearby values tend to use the CPU cache efficiently.",
-        history: "Arrays are a foundational part of indexed computer memory and early programming languages. Resizable arrays are an implementation family; this lesson does not assign a single inventor or invention date.",
+        why: "A program needs a compact sequence whose fifth item can be reached directly. Adjacent slots avoid \
+                        walking a chain of links. A dynamic array adds spare capacity so it can grow; occasionally it must \
+                        allocate a larger region and copy the elements.",
+
+        when: "Choose it for indexed reads and iteration. Appending is cheap on average, but inserting near the front \
+                        shifts later values. If stable addresses or frequent middle edits matter, compare other representations.",
+
+        industry: "An image keeps rows of pixel values in contiguous memory. A sensor dashboard stores recent samples in a \
+                        buffer. Nearby values tend to use the CPU cache efficiently.",
+
+        history: "Arrays are a foundational part of indexed computer memory and early programming languages. Resizable \
+                        arrays are an implementation family; this lesson does not assign a single inventor or invention date.",
+
         source: "https://doc.rust-lang.org/std/vec/struct.Vec.html",
-    },
+    }
+,
     Background {
-        why: "Nested work must finish in reverse order: the most recent unfinished task completes first. A stack remembers that order with just one accessible end, the top.",
-        when: "Choose it for bracket matching, depth-first traversal, undo steps, or simulating recursive calls. It is unsuitable when the oldest task must be served first.",
-        industry: "A parser pushes an opening bracket and pops it at its matching close. Function execution uses call frames; an editor can store reversible commands for undo.",
-        history: "Stacks became important in early language execution and expression evaluation. LIFO is an abstract rule, with several early implementations; no exclusive invention claim is made here.",
+        why: "Nested work must finish in reverse order: the most recent unfinished task completes first. A stack \
+                        remembers that order with just one accessible end, the top.",
+
+        when: "Choose it for bracket matching, depth-first traversal, undo steps, or simulating recursive calls. It is \
+                        unsuitable when the oldest task must be served first.",
+
+        industry: "A parser pushes an opening bracket and pops it at its matching close. Function execution uses call \
+                        frames; an editor can store reversible commands for undo.",
+
+        history: "Stacks became important in early language execution and expression evaluation. LIFO is an abstract rule, \
+                        with several early implementations; no exclusive invention claim is made here.",
+
         source: "https://xlinux.nist.gov/dads/HTML/stack.html",
-    },
+    }
+,
     Background {
-        why: "Work arriving earlier often deserves service earlier. A queue separates the end where work arrives from the end where it leaves, preserving first-in, first-out order.",
-        when: "Use it for breadth-first search, buffered messages and ordinary waiting lines. A FIFO queue does not provide priority ordering or fairness between different producers by itself.",
-        industry: "A print service takes queued jobs in order. A worker consumes pending tasks. Real distributed queues add durability, retries and delivery guarantees beyond this in-memory structure.",
-        history: "Queues model older real-world waiting lines. Their computing implementations developed with scheduling and buffering; the abstract FIFO rule has no unique invention date asserted here.",
+        why: "Work arriving earlier often deserves service earlier. A queue separates the end where work arrives from \
+                        the end where it leaves, preserving first-in, first-out order.",
+
+        when: "Use it for breadth-first search, buffered messages and ordinary waiting lines. A FIFO queue does not \
+                        provide priority ordering or fairness between different producers by itself.",
+
+        industry: "A print service takes queued jobs in order. A worker consumes pending tasks. Real distributed queues add \
+                        durability, retries and delivery guarantees beyond this in-memory structure.",
+
+        history: "Queues model older real-world waiting lines. Their computing implementations developed with scheduling \
+                        and buffering; the abstract FIFO rule has no unique invention date asserted here.",
+
         source: "https://doc.rust-lang.org/std/collections/struct.VecDeque.html",
-    },
+    }
+,
     Background {
-        why: "Some workflows need to add or remove at either end. A double-ended queue provides both stack-like and queue-like behavior without shifting every item on each front operation.",
-        when: "Use it for bounded histories, sliding-window candidate lists and work lists. A ring-buffer deque gives efficient end operations; middle insertion still requires movement.",
-        industry: "A rolling event buffer discards its oldest event while adding a new one. Work-stealing schedulers use specialized concurrent deques; concurrency requires additional synchronization.",
-        history: "A deque generalizes stacks and queues. Ring buffers and linked blocks are different implementations of this interface, not a single invention with one universal origin date.",
+        why: "Some workflows need to add or remove at either end. A double-ended queue provides both stack-like and \
+                        queue-like behavior without shifting every item on each front operation.",
+
+        when: "Use it for bounded histories, sliding-window candidate lists and work lists. A ring-buffer deque gives \
+                        efficient end operations; middle insertion still requires movement.",
+
+        industry: "A rolling event buffer discards its oldest event while adding a new one. Work-stealing schedulers use \
+                        specialized concurrent deques; concurrency requires additional synchronization.",
+
+        history: "A deque generalizes stacks and queues. Ring buffers and linked blocks are different implementations of \
+                        this interface, not a single invention with one universal origin date.",
+
         source: "https://doc.rust-lang.org/std/collections/struct.VecDeque.html",
-    },
+    }
+,
     Background {
-        why: "A growing sequence may need to connect separately allocated nodes without relocating every item. Each node stores its value and the identity of its successor.",
-        when: "Use when inserting after an already-known node matters more than indexing. Finding position k still walks k links. Pointer chasing and allocation can make a list slower than a compact array in practice.",
-        industry: "Free lists connect available memory blocks. Adjacency chains can hold variable-length neighbor lists. Production choices must consider memory locality and ownership.",
-        history: "Shaw, Newell and Simon used linked-list structures in the Information Processing Language work of 1955–1956, a documented early milestone in symbolic computing.",
+        why: "A growing sequence may need to connect separately allocated nodes without relocating every item. Each \
+                        node stores its value and the identity of its successor.",
+
+        when: "Use when inserting after an already-known node matters more than indexing. Finding position k still \
+                        walks k links. Pointer chasing and allocation can make a list slower than a compact array in practice.",
+
+        industry: "Free lists connect available memory blocks. Adjacency chains can hold variable-length neighbor lists. \
+                        Production choices must consider memory locality and ownership.",
+
+        history: "Shaw, Newell and Simon used linked-list structures in the Information Processing Language work of \
+                        1955–1956, a documented early milestone in symbolic computing.",
+
         source: "https://sova.si.edu/record/nmah.ac.0580",
-    },
+    }
+,
     Background {
-        why: "A singly linked list cannot move backward without searching again. Adding a previous link lets a node reach both neighbors and lets a known node be unlinked with local changes.",
-        when: "Use for bidirectional traversal or moving a known item between positions. Pay for an extra link per node and update both directions consistently; indexing remains linear.",
-        industry: "An LRU cache can combine a hash map for key lookup with a doubly linked recency list. A cache hit moves the known node to the front, and eviction removes the tail.",
-        history: "Doubly linked lists extend the early linked-list family. The 1950s IPL work is background for that family, not a verified invention date for this specific variant.",
+        why: "A singly linked list cannot move backward without searching again. Adding a previous link lets a node \
+                        reach both neighbors and lets a known node be unlinked with local changes.",
+
+        when: "Use for bidirectional traversal or moving a known item between positions. Pay for an extra link per node \
+                        and update both directions consistently; indexing remains linear.",
+
+        industry: "An LRU cache can combine a hash map for key lookup with a doubly linked recency list. A cache hit moves \
+                        the known node to the front, and eviction removes the tail.",
+
+        history: "Doubly linked lists extend the early linked-list family. The 1950s IPL work is background for that \
+                        family, not a verified invention date for this specific variant.",
+
         source: "https://doc.rust-lang.org/std/collections/struct.LinkedList.html",
-    },
+    }
+,
     Background {
-        why: "Repeated cycles should return to the beginning without a special null terminator. Connecting the tail to the head makes a repeating sequence explicit.",
-        when: "Use for cyclic traversal and round-robin demonstrations. Save the starting node or a count so traversal stops; waiting for a null next link would loop forever.",
-        industry: "A round-robin work list advances a cursor through participants. Some intrusive lists use a circular sentinel to simplify empty-list and endpoint handling.",
-        history: "Circular lists are a variation on linked structures. This lesson makes no unsupported claim about a unique inventor or date for the tail-to-head convention.",
+        why: "Repeated cycles should return to the beginning without a special null terminator. Connecting the tail to \
+                        the head makes a repeating sequence explicit.",
+
+        when: "Use for cyclic traversal and round-robin demonstrations. Save the starting node or a count so traversal \
+                        stops; waiting for a null next link would loop forever.",
+
+        industry: "A round-robin work list advances a cursor through participants. Some intrusive lists use a circular \
+                        sentinel to simplify empty-list and endpoint handling.",
+
+        history: "Circular lists are a variation on linked structures. This lesson makes no unsupported claim about a \
+                        unique inventor or date for the tail-to-head convention.",
+
         source: "https://www.kernel.org/doc/html/latest/core-api/list.html",
-    },
+    }
+,
     Background {
-        why: "Keys such as product codes do not naturally map to dense integer positions. Hashing calculates a candidate location; collision handling keeps different keys safe when they choose the same location.",
-        when: "Use for fast keyed reads and updates without sorted-order requirements. Good hashing and controlled load factor give average constant-time operations, but worst-case behavior can be linear.",
-        industry: "A service indexes session IDs or counts events by type. A compiler maps identifiers to symbols. Production implementations include resizing and protections missing from this fixed eight-bucket teaching model.",
-        history: "Hashing developed during early computing. Multiple techniques and contributors exist; this lesson avoids assigning a disputed single inventor and date.",
+        why: "Keys such as product codes do not naturally map to dense integer positions. Hashing calculates a \
+                        candidate location; collision handling keeps different keys safe when they choose the same location.",
+
+        when: "Use for fast keyed reads and updates without sorted-order requirements. Good hashing and controlled load \
+                        factor give average constant-time operations, but worst-case behavior can be linear.",
+
+        industry: "A service indexes session IDs or counts events by type. A compiler maps identifiers to symbols. \
+                        Production implementations include resizing and protections missing from this fixed eight-bucket \
+                        teaching model.",
+
+        history: "Hashing developed during early computing. Multiple techniques and contributors exist; this lesson avoids \
+                        assigning a disputed single inventor and date.",
+
         source: "https://xlinux.nist.gov/dads/HTML/hashtab.html",
-    },
+    }
+,
     Background {
-        why: "Sometimes the only question is whether a key has already appeared. A hash set stores membership without attaching a separate value, and inserting a duplicate changes nothing.",
-        when: "Use for deduplication, visited nodes and membership checks. Choose an ordered set when iteration order or sorted ranges are essential; a set does not remember multiplicity.",
-        industry: "An import pipeline rejects repeated record IDs. A crawler marks visited pages. A recommendation service removes already-seen candidates before ranking them.",
-        history: "Sets are an older mathematical concept; a hash set combines set membership with computer hashing. It is a representation family rather than a uniquely dated invention here.",
+        why: "Sometimes the only question is whether a key has already appeared. A hash set stores membership without \
+                        attaching a separate value, and inserting a duplicate changes nothing.",
+
+        when: "Use for deduplication, visited nodes and membership checks. Choose an ordered set when iteration order \
+                        or sorted ranges are essential; a set does not remember multiplicity.",
+
+        industry: "An import pipeline rejects repeated record IDs. A crawler marks visited pages. A recommendation service \
+                        removes already-seen candidates before ranking them.",
+
+        history: "Sets are an older mathematical concept; a hash set combines set membership with computer hashing. It is \
+                        a representation family rather than a uniquely dated invention here.",
+
         source: "https://doc.rust-lang.org/std/collections/struct.HashSet.html",
-    },
+    }
+,
     Background {
-        why: "Ordering every subtree lets a comparison eliminate part of a search. Values smaller than a node go left and larger values go right; an inorder traversal produces sorted keys.",
-        when: "Use for ordered lookup and range reasoning. This lab shows an unbalanced BST: sorted insertions can create a chain. Production ordered maps usually use balanced tree families to control height.",
-        industry: "Ordered indexes support predecessor, successor and range queries. The lab's plain BST explains the ordering rule; it is not a simulation of a production database B-tree.",
-        history: "Search trees developed in early computing, with later balanced variants addressing degeneration. Different tree families have distinct histories; no single date is assigned to all search trees.",
+        why: "Ordering every subtree lets a comparison eliminate part of a search. Values smaller than a node go left \
+                        and larger values go right; an inorder traversal produces sorted keys.",
+
+        when: "Use for ordered lookup and range reasoning. This lab shows an unbalanced BST: sorted insertions can \
+                        create a chain. Production ordered maps usually use balanced tree families to control height.",
+
+        industry: "Ordered indexes support predecessor, successor and range queries. The lab's plain BST explains the \
+                        ordering rule; it is not a simulation of a production database B-tree.",
+
+        history: "Search trees developed in early computing, with later balanced variants addressing degeneration. \
+                        Different tree families have distinct histories; no single date is assigned to all search trees.",
+
         source: "https://xlinux.nist.gov/dads/HTML/binarySearchTree.html",
-    },
+    }
+,
     Background {
-        why: "A task scheduler often needs only the smallest priority next, not a fully sorted list. A heap keeps the parent no larger than its children, so the minimum stays at the root.",
-        when: "Use for repeated minimum extraction, top-k selection and priority scheduling. The rest of the heap is not sorted. Finding an arbitrary value can still require scanning all nodes.",
-        industry: "An event simulator processes the earliest timestamp. A priority scheduler selects the next job. A shortest-path implementation can use a heap to select its next tentative distance.",
-        history: "J. W. J. Williams published heapsort in 1964, a central documented milestone for binary heaps. The priority-queue interface is broader than this specific implementation.",
+        why: "A task scheduler often needs only the smallest priority next, not a fully sorted list. A heap keeps the \
+                        parent no larger than its children, so the minimum stays at the root.",
+
+        when: "Use for repeated minimum extraction, top-k selection and priority scheduling. The rest of the heap is \
+                        not sorted. Finding an arbitrary value can still require scanning all nodes.",
+
+        industry: "An event simulator processes the earliest timestamp. A priority scheduler selects the next job. A \
+                        shortest-path implementation can use a heap to select its next tentative distance.",
+
+        history: "J. W. J. Williams published heapsort in 1964, a central documented milestone for binary heaps. The \
+                        priority-queue interface is broader than this specific implementation.",
+
         source: "https://xlinux.nist.gov/dads/HTML/heapSort.html",
-    },
+    }
+,
     Background {
-        why: "Words often share prefixes. A trie stores those prefixes once along paths; a separate terminal marker distinguishes a complete word from a prefix of a longer word.",
-        when: "Use for prefix queries and small-alphabet dictionaries. Operations follow key characters, but many child links can consume memory. Compressed/radix variants reduce sparse paths.",
-        industry: "Autocomplete follows a prefix and explores completions. Routing uses specialized bit/radix tries. A plain character trie is useful for explaining paths and terminal markers.",
-        history: "Tries belong to the digital-search family. Naming and early implementations have distinct histories; this lesson does not present one date as the origin of every prefix-tree variant.",
+        why: "Words often share prefixes. A trie stores those prefixes once along paths; a separate terminal marker \
+                        distinguishes a complete word from a prefix of a longer word.",
+
+        when: "Use for prefix queries and small-alphabet dictionaries. Operations follow key characters, but many child \
+                        links can consume memory. Compressed/radix variants reduce sparse paths.",
+
+        industry: "Autocomplete follows a prefix and explores completions. Routing uses specialized bit/radix tries. A \
+                        plain character trie is useful for explaining paths and terminal markers.",
+
+        history: "Tries belong to the digital-search family. Naming and early implementations have distinct histories; \
+                        this lesson does not present one date as the origin of every prefix-tree variant.",
+
         source: "https://xlinux.nist.gov/dads/HTML/trie.html",
-    },
+    }
+,
     Background {
-        why: "Many relationships cannot fit a single chain or hierarchy. A graph stores vertices and edges so one entity can connect to several others, including through cycles.",
-        when: "Use for networks, dependencies and reachability. Choose directed/undirected and weighted/unweighted edges deliberately. An adjacency list uses space proportional to vertices plus edges for sparse networks.",
-        industry: "A dependency graph connects build tasks, and a road network connects junctions. This structure lab is undirected; the roadmap's advanced trace adds nonnegative weights for shortest paths.",
-        history: "Euler's 1736 work on the Königsberg bridges is a classic milestone in graph theory. Computer graph representations and traversal algorithms came much later.",
+        why: "Many relationships cannot fit a single chain or hierarchy. A graph stores vertices and edges so one \
+                        entity can connect to several others, including through cycles.",
+
+        when: "Use for networks, dependencies and reachability. Choose directed/undirected and weighted/unweighted \
+                        edges deliberately. An adjacency list uses space proportional to vertices plus edges for sparse networks.",
+
+        industry: "A dependency graph connects build tasks, and a road network connects junctions. This structure lab is \
+                        undirected; the roadmap's advanced trace adds nonnegative weights for shortest paths.",
+
+        history: "Euler's 1736 work on the Königsberg bridges is a classic milestone in graph theory. Computer graph \
+                        representations and traversal algorithms came much later.",
+
         source: "https://math.dartmouth.edu/~euler/docs/originals/E053.pdf",
-    },
+    }
+,
     Background {
-        why: "Repeatedly asking whether two objects belong to the same group should not require rewalking the entire group. Parent links lead to a representative, and union joins representatives.",
-        when: "Use for incremental undirected connectivity and Kruskal-style grouping. Path compression shortens future finds. Basic union-find does not support deleting edges or answer shortest paths.",
-        industry: "A connectivity analysis groups components as links arrive. Image processing can combine adjacent connected labels. The structure tracks partitions, not each component's detailed geometry.",
-        history: "Disjoint-set algorithms evolved through several union and find strategies. Efficient implementations combine heuristics whose analysis is separate from the original grouping problem; no single invention claim is made here.",
+        why: "Repeatedly asking whether two objects belong to the same group should not require rewalking the entire \
+                        group. Parent links lead to a representative, and union joins representatives.",
+
+        when: "Use for incremental undirected connectivity and Kruskal-style grouping. Path compression shortens future \
+                        finds. Basic union-find does not support deleting edges or answer shortest paths.",
+
+        industry: "A connectivity analysis groups components as links arrive. Image processing can combine adjacent \
+                        connected labels. The structure tracks partitions, not each component's detailed geometry.",
+
+        history: "Disjoint-set algorithms evolved through several union and find strategies. Efficient implementations \
+                        combine heuristics whose analysis is separate from the original grouping problem; no single invention \
+                        claim is made here.",
+
         source: "https://xlinux.nist.gov/dads/HTML/disjointset.html",
-    },
+    }
+,
     Background {
-        why: "Changing one value invalidates many naive prefix sums. A Fenwick tree stores selected overlapping partial sums so an update or prefix query visits only logarithmically many entries.",
-        when: "Use for dynamic frequency counts and prefix totals. A range sum is prefix(right) minus prefix(left-1). One-based internal indices make the lowest-set-bit navigation work; arbitrary aggregates need more care.",
-        industry: "Cumulative frequency tables in arithmetic coding were a motivation. The same structure can maintain rank counts or live cumulative totals when the key universe is indexed.",
-        history: "Peter Fenwick published 'A new data structure for cumulative frequency tables' in 1994. The publication is the cited milestone for the structure commonly called the Fenwick or binary indexed tree.",
+        why: "Changing one value invalidates many naive prefix sums. A Fenwick tree stores selected overlapping \
+                        partial sums so an update or prefix query visits only logarithmically many entries.",
+
+        when: "Use for dynamic frequency counts and prefix totals. A range sum is prefix(right) minus prefix(left-1). \
+                        One-based internal indices make the lowest-set-bit navigation work; arbitrary aggregates need more care.",
+
+        industry: "Cumulative frequency tables in arithmetic coding were a motivation. The same structure can maintain rank \
+                        counts or live cumulative totals when the key universe is indexed.",
+
+        history: "Peter Fenwick published 'A new data structure for cumulative frequency tables' in 1994. The publication \
+                        is the cited milestone for the structure commonly called the Fenwick or binary indexed tree.",
+
         source: "https://doi.org/10.1002/spe.4380240306",
-    },
+    }
+,
     Background {
-        why: "A range query should combine a few summaries instead of rescanning every value. A segment tree splits an interval repeatedly; each parent combines the answers of its two children.",
-        when: "Use for mutable range sums, minima or other associative aggregates. Point updates and range queries are logarithmic in a standard implementation. Lazy propagation is a further technique for range updates and is not implemented in this lab.",
-        industry: "An indexed analytics buffer can summarize changing time intervals. A range-minimum service can answer subrange queries while individual measurements change. Production systems may choose different storage structures.",
-        history: "Segment trees belong to a wider history of range-search structures. Geometric segment trees and the array-aggregate variant taught here are related but not identical; no one origin date is asserted for both.",
+        why: "A range query should combine a few summaries instead of rescanning every value. A segment tree splits an \
+                        interval repeatedly; each parent combines the answers of its two children.",
+
+        when: "Use for mutable range sums, minima or other associative aggregates. Point updates and range queries are \
+                        logarithmic in a standard implementation. Lazy propagation is a further technique for range updates and \
+                        is not implemented in this lab.",
+
+        industry: "An indexed analytics buffer can summarize changing time intervals. A range-minimum service can answer \
+                        subrange queries while individual measurements change. Production systems may choose different storage \
+                        structures.",
+
+        history: "Segment trees belong to a wider history of range-search structures. Geometric segment trees and the \
+                        array-aggregate variant taught here are related but not identical; no one origin date is asserted for both.",
+
         source: "https://cp-algorithms.com/data_structures/segment_tree.html",
-    },
+    }
+,
 ];

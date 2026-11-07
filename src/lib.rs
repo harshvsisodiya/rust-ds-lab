@@ -2,12 +2,11 @@ pub mod background;
 pub mod catalog;
 pub mod curriculum;
 pub mod desktop;
+pub mod extras;
+pub mod guides;
 pub mod model;
 pub mod practice;
-
 pub mod progress;
-pub mod theme;
-
-pub mod guides;
-
+pub mod reference;
 mod symbol_font;
+pub mod theme;

@@ -18,13 +18,20 @@ pub const LESSONS: &[Lesson] = &[
         x: 0.0,
         y: 0.0,
         why: r###"Store many values and retrieve them by position or key."###,
-        how: r###"An array keeps adjacent slots; a hash table routes a key to a bucket, then resolves collisions."###,
-        when: r###"Use arrays for dense sequences and maps for keyed lookup. Arrays avoid pointer chasing; hashing trades extra memory for average constant lookup."###,
+        how: r###"An array keeps adjacent slots; a hash table routes a key to a bucket, \
+                        then resolves collisions."###,
+        when: "Use arrays for dense sequences and maps for keyed lookup. Arrays avoid pointer chasing; hashing trades \
+                        extra memory for average constant lookup.",
+
         industry: r###"Sensor samples, inventory keyed by SKU, counting events in a log."###,
+
         history: r###"Arrays are foundational indexed memory. Hashing developed in early computing; there is no single inventor asserted here."###,
+
         structures: r###"array,hashmap,hashset"###,
+
         source: r###"https://xlinux.nist.gov/dads/HTML/hashtab.html"###,
-    },
+    }
+,
     Lesson {
         id: r###"pointers"###,
         title: r###"Two Pointers"###,
@@ -37,7 +44,8 @@ pub const LESSONS: &[Lesson] = &[
         history: r###"This is a family of traversal techniques, not one data structure with a universally agreed invention date."###,
         structures: r###"array"###,
         source: r###"https://xlinux.nist.gov/dads/HTML/merge.html"###,
-    },
+    }
+,
     Lesson {
         id: r###"stack"###,
         title: r###"Stack"###,
@@ -47,10 +55,14 @@ pub const LESSONS: &[Lesson] = &[
         how: r###"Push at the top; pop the most recently added item. Matching brackets uses the stack to remember opening symbols."###,
         when: r###"Use nesting, undo, expression evaluation and depth-first worklists."###,
         industry: r###"Function calls, syntax parsers and undo history."###,
-        history: r###"Stacks became central to language execution in early computing. Do not confuse one early implementation with invention of the abstract LIFO idea."###,
+        history: "Stacks became central to language execution in early computing. Do not confuse one early implementation \
+                        with invention of the abstract LIFO idea.",
+
         structures: r###"stack"###,
+
         source: r###"https://xlinux.nist.gov/dads/HTML/stack.html"###,
-    },
+    }
+,
     Lesson {
         id: r###"binary"###,
         title: r###"Binary Search"###,
@@ -63,7 +75,8 @@ pub const LESSONS: &[Lesson] = &[
         history: r###"Halving a search interval is an old mathematical idea; no unique inventor is claimed for the general method."###,
         structures: r###"array"###,
         source: r###"https://xlinux.nist.gov/dads/HTML/binarySearch.html"###,
-    },
+    }
+,
     Lesson {
         id: r###"window"###,
         title: r###"Sliding Window"###,
@@ -76,7 +89,8 @@ pub const LESSONS: &[Lesson] = &[
         history: r###"Sliding windows describe several streaming techniques, not a single invention with one date."###,
         structures: r###"queue,deque"###,
         source: r###"https://docs.python.org/3/library/collections.html#collections.deque"###,
-    },
+    }
+,
     Lesson {
         id: r###"linked"###,
         title: r###"Linked List"###,
@@ -86,10 +100,14 @@ pub const LESSONS: &[Lesson] = &[
         how: r###"Nodes store values and links. Rewire neighboring links; searching for a position still takes time."###,
         when: r###"Use when stable node identities and known-node edits matter. Arrays often win for sequential scans due to locality."###,
         industry: r###"Free lists, intrusive OS lists and the recency chain in an LRU cache."###,
-        history: r###"Newell, Shaw and Simon developed influential list-processing work in 1955–1956 at RAND and Carnegie. This is a historical milestone, not a claim about every list variant."###,
+        history: "Newell, Shaw and Simon developed influential list-processing work in 1955–1956 at RAND and Carnegie. \
+                        This is a historical milestone, not a claim about every list variant.",
+
         structures: r###"singly,doubly,circular"###,
+
         source: r###"https://sova.si.edu/record/nmah.ac.0580"###,
-    },
+    }
+,
     Lesson {
         id: r###"trees"###,
         title: r###"Trees"###,
@@ -99,10 +117,14 @@ pub const LESSONS: &[Lesson] = &[
         how: r###"A root leads to children. A BST additionally orders keys: smaller left, larger right."###,
         when: r###"Use hierarchy and ordered lookup. Unbalanced BSTs can become chains; balanced variants keep height small."###,
         industry: r###"Directories, document syntax trees and ordered indexes."###,
-        history: r###"Trees have mathematical roots predating computers. BSTs and balanced variants evolved separately; there is no single invention date for all trees."###,
+        history: "Trees have mathematical roots predating computers. BSTs and balanced variants evolved separately; there \
+                        is no single invention date for all trees.",
+
         structures: r###"bst"###,
+
         source: r###"https://xlinux.nist.gov/dads/HTML/binarySearchTree.html"###,
-    },
+    }
+,
     Lesson {
         id: r###"tries"###,
         title: r###"Tries"###,
@@ -110,12 +132,13 @@ pub const LESSONS: &[Lesson] = &[
         y: 4.0,
         why: r###"Share repeated prefixes instead of storing and scanning every full word independently."###,
         how: r###"Follow one character per edge; a terminal flag distinguishes a complete word from a mere prefix."###,
-        when: r###"Use prefix lookup, dictionaries and routing keys. Sparse children can save memory compared with a fixed full alphabet at every node."###,
+        when: "Use prefix lookup, dictionaries and routing keys. Sparse children can save memory compared with a fixed full alphabet at every node.",
         industry: r###"Autocomplete dictionaries and prefix-based lookup."###,
-        history: r###"Trie is a distinct prefix-tree family; its name comes from retrieval. See the linked reference for definitions and historical references."###,
+        history: "Trie is a distinct prefix-tree family; its name comes from retrieval. See the linked reference for definitions and historical references.",
         structures: r###"trie"###,
         source: r###"https://xlinux.nist.gov/dads/HTML/trie.html"###,
-    },
+    }
+,
     Lesson {
         id: r###"heap"###,
         title: r###"Heap / Priority Queue"###,
@@ -128,7 +151,8 @@ pub const LESSONS: &[Lesson] = &[
         history: r###"J. W. J. Williams published heapsort in 1964, an important binary-heap milestone."###,
         structures: r###"heap"###,
         source: r###"https://xlinux.nist.gov/dads/HTML/heapSort.html"###,
-    },
+    }
+,
     Lesson {
         id: r###"backtrack"###,
         title: r###"Backtracking"###,
@@ -141,7 +165,8 @@ pub const LESSONS: &[Lesson] = &[
         history: r###"Systematic search predates computing. Backtracking is a broad technique; no sole inventor is claimed here."###,
         structures: r###"stack"###,
         source: r###"https://xlinux.nist.gov/dads/HTML/backtrack.html"###,
-    },
+    }
+,
     Lesson {
         id: r###"graphs"###,
         title: r###"Graphs"###,
@@ -154,7 +179,8 @@ pub const LESSONS: &[Lesson] = &[
         history: r###"Graph theory predates electronic computers. Individual traversal and optimization methods have separate histories."###,
         structures: r###"graph,queue"###,
         source: r###"https://xlinux.nist.gov/dads/HTML/graph.html"###,
-    },
+    }
+,
     Lesson {
         id: r###"dp1"###,
         title: r###"1-D Dynamic Programming"###,
@@ -167,7 +193,8 @@ pub const LESSONS: &[Lesson] = &[
         history: r###"Richard Bellman developed dynamic programming in the 1950s; a 1952 paper and his 1957 book are landmarks."###,
         structures: r###"array"###,
         source: r###"https://pubmed.ncbi.nlm.nih.gov/16589462/"###,
-    },
+    }
+,
     Lesson {
         id: r###"intervals"###,
         title: r###"Intervals"###,
@@ -180,7 +207,8 @@ pub const LESSONS: &[Lesson] = &[
         history: r###"Intervals are mathematical objects. Merging and scheduling are separate algorithmic problems with no single shared invention date."###,
         structures: r###"array"###,
         source: r###"https://xlinux.nist.gov/dads/HTML/interval.html"###,
-    },
+    }
+,
     Lesson {
         id: r###"greedy"###,
         title: r###"Greedy"###,
@@ -193,7 +221,8 @@ pub const LESSONS: &[Lesson] = &[
         history: r###"Greedy algorithms are a family with separate histories. The interval scheduling rule used here is a standard example."###,
         structures: r###"heap"###,
         source: r###"https://xlinux.nist.gov/dads/HTML/greedyalgo.html"###,
-    },
+    }
+,
     Lesson {
         id: r###"advanced"###,
         title: r###"Advanced Graphs"###,
@@ -206,7 +235,8 @@ pub const LESSONS: &[Lesson] = &[
         history: r###"Dijkstra published his shortest-path algorithm in 1959. Union-find has its own development history."###,
         structures: r###"dsu,graph,heap"###,
         source: r###"https://doi.org/10.1007/BF01386390"###,
-    },
+    }
+,
     Lesson {
         id: r###"dp2"###,
         title: r###"2-D Dynamic Programming"###,
@@ -219,7 +249,8 @@ pub const LESSONS: &[Lesson] = &[
         history: r###"Two-dimensional DP uses Bellman’s general framework; it is not a separate invention."###,
         structures: r###"array"###,
         source: r###"https://pubmed.ncbi.nlm.nih.gov/16589462/"###,
-    },
+    }
+,
     Lesson {
         id: r###"bits"###,
         title: r###"Bit Manipulation"###,
@@ -232,7 +263,8 @@ pub const LESSONS: &[Lesson] = &[
         history: r###"Bit operations grow from binary arithmetic and Boolean algebra; no single computer-era invention date applies."###,
         structures: r###"array"###,
         source: r###"https://doc.rust-lang.org/std/primitive.u32.html"###,
-    },
+    }
+,
     Lesson {
         id: r###"math"###,
         title: r###"Math & Geometry"###,
@@ -245,7 +277,8 @@ pub const LESSONS: &[Lesson] = &[
         history: r###"Euclid’s greatest-common-divisor method dates to ancient mathematics. Modern computational geometry contains many later methods."###,
         structures: r###"array"###,
         source: r###"https://xlinux.nist.gov/dads/HTML/euclidGcd.html"###,
-    },
+    }
+,
 ];
 pub const LINKS: &[(usize, usize)] = &[
     (0, 1),

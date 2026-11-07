@@ -1,8 +1,6 @@
 //! Deterministic teaching models. Diagram node IDs are not memory addresses.
 use std::collections::{BTreeMap, BTreeSet};
-
 pub const MAX_ITEMS: usize = 16;
-
 pub fn tokens(data: &str) -> Vec<String> {
     data.split(',')
         .map(str::trim)
@@ -10,7 +8,6 @@ pub fn tokens(data: &str) -> Vec<String> {
         .map(str::to_string)
         .collect()
 }
-
 pub fn numeric(kind: &str) -> bool {
     matches!(
         kind,
@@ -27,19 +24,19 @@ pub fn numeric(kind: &str) -> bool {
             | "segment"
     )
 }
-
 pub fn number(s: &str) -> Result<i64, String> {
     s.parse::<i64>()
         .ok()
         .filter(|n| (-9999..=9999).contains(n))
         .ok_or_else(|| "Use integers between -9999 and 9999.".to_string())
 }
-
 fn key(s: &str) -> bool {
     !s.is_empty() && s.len() <= 12 && s.chars().all(|c| c.is_ascii_alphanumeric() || c == '_')
 }
-
 pub fn validate(kind: &str, items: &[String]) -> Result<(), String> {
+    if !numeric(kind) && !matches!(kind, "hashmap" | "hashset" | "trie" | "graph" | "dsu") {
+        return Err("Unknown data structure.".into());
+    }
     if items.len() > MAX_ITEMS {
         return Err("Keep the diagram to 16 input items or fewer.".into());
     }
@@ -77,7 +74,6 @@ pub fn validate(kind: &str, items: &[String]) -> Result<(), String> {
     }
     Ok(())
 }
-
 #[derive(Debug, Clone)]
 pub struct Node {
     pub label: String,
@@ -130,7 +126,6 @@ impl Diagram {
         });
     }
 }
-
 #[derive(Debug)]
 pub struct Bst {
     pub value: i64,
@@ -191,7 +186,6 @@ impl Bst {
         id
     }
 }
-
 pub fn heap_push(heap: &mut Vec<i64>, value: i64) {
     heap.push(value);
     let mut i = heap.len() - 1;
@@ -223,7 +217,6 @@ pub fn heap_pop(heap: &mut Vec<i64>) -> Option<i64> {
     }
     Some(result)
 }
-
 pub fn fenwick(values: &[i64]) -> Vec<i64> {
     let mut bit = vec![0; values.len() + 1];
     for (i, value) in values.iter().enumerate() {
@@ -243,7 +236,6 @@ pub fn prefix(bit: &[i64], mut i: usize) -> i64 {
     }
     sum
 }
-
 #[derive(Default, Debug)]
 pub struct Dsu {
     pub parents: BTreeMap<String, String>,
@@ -276,7 +268,6 @@ impl Dsu {
         self.sizes.insert(a, size);
     }
 }
-
 #[derive(Default)]
 struct Trie {
     terminal: bool,
@@ -319,13 +310,11 @@ impl Trie {
         id
     }
 }
-
 /// Small deterministic teaching hash, not Python's or Rust's production hash.
 pub fn bucket(key: &str) -> usize {
     key.bytes()
         .fold(0usize, |hash, b| (hash * 31 + b as usize) % 8)
 }
-
 fn tree_position(i: usize, canvas_width: f64) -> (f64, f64) {
     let depth = (usize::BITS - (i + 1).leading_zeros() - 1) as usize;
     let first = (1usize << depth) - 1;
@@ -335,7 +324,6 @@ fn tree_position(i: usize, canvas_width: f64) -> (f64, f64) {
         60.0 + depth as f64 * 100.0,
     )
 }
-
 fn segment_draw(values: &[i64], lo: usize, hi: usize, depth: usize, d: &mut Diagram) -> usize {
     let x = 60.0 + (d.width - 120.0) * (lo + hi) as f64 / (2.0 * values.len() as f64);
     let id = d.node(
@@ -354,8 +342,21 @@ fn segment_draw(values: &[i64], lo: usize, hi: usize, depth: usize, d: &mut Diag
     }
     id
 }
-
+/// Build a bounded teaching diagram. Invalid input yields an empty diagram
+/// with an `Input error` row; callers that need a Result should use try_build.
 pub fn build(kind: &str, items: &[String]) -> Diagram {
+    try_build(kind, items).unwrap_or_else(|error| {
+        let mut diagram = Diagram::new();
+        diagram.rows.push(("Input error".into(), error));
+        diagram
+    })
+}
+/// Validate at the public API boundary, even when the UI is bypassed.
+pub fn try_build(kind: &str, items: &[String]) -> Result<Diagram, String> {
+    validate(kind, items)?;
+    Ok(build_validated(kind, items))
+}
+fn build_validated(kind: &str, items: &[String]) -> Diagram {
     let mut d = Diagram::new();
     let nums: Vec<i64> = items.iter().filter_map(|s| s.parse().ok()).collect();
     match kind {
@@ -367,7 +368,9 @@ pub fn build(kind: &str, items: &[String]) -> Diagram {
             let count = nums.iter().collect::<BTreeSet<_>>().len();
             d.width = (count as f64 * 140.0).max(1000.0);
             if let Some(root) = root {
-                root.draw(&mut d, 0, &mut 0, count, *nums.last().unwrap());
+                if let Some(last) = nums.last() {
+                    root.draw(&mut d, 0, &mut 0, count, *last);
+                }
             }
         }
         "heap" => {
@@ -403,7 +406,9 @@ pub fn build(kind: &str, items: &[String]) -> Diagram {
             let mut map = BTreeMap::new();
             for item in items {
                 if kind == "hashmap" {
-                    let (k, v) = item.split_once(':').unwrap();
+                    let Some((k, v)) = item.split_once(':') else {
+                        continue;
+                    };
                     map.insert(k.to_string(), v.to_string());
                 } else {
                     map.insert(item.clone(), String::new());
@@ -447,7 +452,9 @@ pub fn build(kind: &str, items: &[String]) -> Diagram {
         "graph" => {
             let mut graph: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
             for pair in items {
-                let (a, b) = pair.split_once('-').unwrap();
+                let Some((a, b)) = pair.split_once('-') else {
+                    continue;
+                };
                 graph.entry(a.into()).or_default().insert(b.into());
                 graph.entry(b.into()).or_default().insert(a.into());
             }
@@ -479,7 +486,9 @@ pub fn build(kind: &str, items: &[String]) -> Diagram {
         "dsu" => {
             let mut sets = Dsu::default();
             for pair in items {
-                let (a, b) = pair.split_once('-').unwrap();
+                let Some((a, b)) = pair.split_once('-') else {
+                    continue;
+                };
                 sets.union(a, b);
             }
             let names: Vec<_> = sets.parents.keys().cloned().collect();
@@ -515,8 +524,9 @@ pub fn build(kind: &str, items: &[String]) -> Diagram {
             }
             for (i, name) in names.iter().enumerate() {
                 if sets.parents[name] != *name {
-                    let parent = names.iter().position(|x| x == &sets.parents[name]).unwrap();
-                    d.edge(i, parent, true, false);
+                    if let Some(parent) = names.iter().position(|x| x == &sets.parents[name]) {
+                        d.edge(i, parent, true, false);
+                    }
                 }
             }
         }
@@ -585,7 +595,6 @@ pub fn build(kind: &str, items: &[String]) -> Diagram {
     }
     d
 }
-
 /// Mutations operate on the currently displayed prefix. Every result is revalidated.
 pub fn mutate(
     kind: &str,
