@@ -12,6 +12,19 @@ pub const LEAF: Color32 = Color32::from_rgb(61, 82, 53);
 pub const LINE: Color32 = Color32::from_rgb(226, 219, 208);
 pub const SOFT_GREEN: Color32 = Color32::from_rgb(232, 238, 225);
 pub fn apply(ctx: &egui::Context) {
+    let mut fonts = egui::FontDefinitions::default();
+    fonts.font_data.insert(
+        "lab_symbols".into(),
+        std::sync::Arc::new(egui::FontData::from_static(crate::symbol_font::SYMBOLS)),
+    );
+    for family in [egui::FontFamily::Proportional, egui::FontFamily::Monospace] {
+        fonts
+            .families
+            .get_mut(&family)
+            .unwrap()
+            .push("lab_symbols".into());
+    }
+    ctx.set_fonts(fonts);
     let mut v = egui::Visuals::light();
     v.panel_fill = CREAM;
     v.window_fill = PAPER;

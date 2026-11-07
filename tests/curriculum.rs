@@ -5,6 +5,7 @@ use rust_ds_lab::{
 #[test]
 fn roadmap_is_complete_and_acyclic() {
     assert_eq!(LESSONS.len(), 18);
+    assert_eq!(rust_ds_lab::guides::GUIDES.len(), LESSONS.len());
     for &(a, b) in LINKS {
         assert!(a < LESSONS.len() && b < LESSONS.len());
         assert!(LESSONS[a].y < LESSONS[b].y);

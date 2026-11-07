@@ -78,6 +78,7 @@ impl Progress {
     }
     pub fn load(path: &Path) -> Self {
         fs::read_to_string(path)
+            .or_else(|_| fs::read_to_string(path.with_extension("backup")))
             .map(|s| Self::decode(&s))
             .unwrap_or_default()
     }
@@ -113,6 +114,25 @@ pub fn path() -> Option<PathBuf> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn saved_checkpoints_survive_restart_and_replacement() {
+        let dir = std::env::temp_dir().join(format!("rust-ds-lab-test-{}", std::process::id()));
+        let path = dir.join("progress.txt");
+        let mut p = Progress {
+            welcomed: true,
+            ..Progress::default()
+        };
+        for stage in 0..3 {
+            p.set(5, stage, true);
+        }
+        p.save(&path).unwrap();
+        assert_eq!(Progress::load(&path), p);
+        p.set(5, 2, false);
+        p.save(&path).unwrap();
+        assert_eq!(Progress::load(&path), p);
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
     #[test]
     fn checkpoints_round_trip_and_recent_completion() {
         let mut p = Progress::default();

@@ -7,3 +7,7 @@ pub mod practice;
 
 pub mod progress;
 pub mod theme;
+
+pub mod guides;
+
+mod symbol_font;

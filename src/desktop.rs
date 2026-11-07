@@ -257,6 +257,10 @@ impl Lab {
                         .color(TAUPE),
                 );
                 ui.label(LESSONS[next].why);
+                let compact = ui.available_width() < 650.0;
+                if compact {
+                    self.home_actions(ui, next);
+                }
                 mini_array(
                     ui,
                     &["12", "7", "24", "9", "18"],
@@ -264,14 +268,9 @@ impl Lab {
                     "A position gives every value a home.",
                 );
                 self.checkpoint_summary(ui, next);
-                ui.horizontal_wrapped(|ui| {
-                    if primary(ui, "Continue learning  →").clicked() {
-                        self.select_lesson(next);
-                    }
-                    if ui.button("Explore the roadmap").clicked() {
-                        self.navigate(View::Roadmap);
-                    }
-                });
+                if !compact {
+                    self.home_actions(ui, next);
+                }
             });
         if let Some(i) = self.progress.recent {
             ui.add_space(5.0);
@@ -325,6 +324,16 @@ impl Lab {
                 small_card(ui, n, t, b, c);
             }
         }
+    }
+    fn home_actions(&mut self, ui: &mut egui::Ui, next: usize) {
+        ui.horizontal_wrapped(|ui| {
+            if primary(ui, "Continue learning  →").clicked() {
+                self.select_lesson(next);
+            }
+            if ui.button("Explore the roadmap").clicked() {
+                self.navigate(View::Roadmap);
+            }
+        });
     }
     fn library(&mut self, ui: &mut egui::Ui) {
         page_title(ui,"THE LIBRARY","Find your next idea.","Choose a guided topic or go straight to a data structure. Your checkpoints travel with you.");
@@ -423,12 +432,12 @@ impl Lab {
             .show(ui, |ui| {
                 let s = self.zoom;
                 let (rect, _) =
-                    ui.allocate_exact_size(Vec2::new(1150.0, 1080.0) * s, egui::Sense::hover());
+                    ui.allocate_exact_size(Vec2::new(1200.0, 1080.0) * s, egui::Sense::hover());
                 let p = ui.painter();
                 p.rect_filled(rect, 20.0, PAPER);
                 let positions: Vec<_> = LESSONS
                     .iter()
-                    .map(|l| rect.min + Vec2::new(480.0 + l.x * 143.0, 55.0 + l.y * 118.0) * s)
+                    .map(|l| rect.min + Vec2::new(520.0 + l.x * 143.0, 55.0 + l.y * 118.0) * s)
                     .collect();
                 for &(a, b) in LINKS {
                     let from = positions[a] + Vec2::new(0.0, 34.0) * s;
@@ -523,6 +532,18 @@ impl Lab {
         }
         section(ui, "01 / THE REASON", "Why does it exist?", l.why);
         section(ui, "02 / THE IDEA", "How does it work?", l.how);
+        let guide = &crate::guides::GUIDES[self.lesson];
+        card().show(ui, |ui| {
+            ui.set_width(ui.available_width());
+            eyebrow(ui, "A FAMILIAR WAY TO THINK ABOUT IT");
+            ui.label(guide.analogy);
+            ui.add_space(6.0);
+            ui.heading("The steps to follow");
+            for (i, step) in guide.steps.iter().enumerate() {
+                ui.label(format!("{}. {}", i + 1, step));
+            }
+        });
+
         card().show(ui, |ui| {
             ui.set_width(ui.available_width());
             eyebrow(ui, "03 / SEE THE STORY");
@@ -986,54 +1007,56 @@ impl Lab {
             return;
         };
         let steps=[("A calmer way to learn.","Start with one idea. You don't need to know the roadmap or any code yet.","Your first lesson explains why a structure exists, how it works, and where you would use it."),("Read it. Then see it.","Every lesson follows the same path: Understand → Visual walkthrough → Practice.","In a structure lab, open Playground to enter your own values. The blue note explains what happened after each step."),("You control the pace.","Next advances one state. Back revisits it. Play moves automatically; Reset begins again.","Blue identifies the active item. Node labels and step explanations communicate meaning alongside color. Reduce motion turns off transitions."),("Pick up where you left off.","Mark a checkpoint after understanding, visualizing and practicing. All three complete a topic.","Progress is saved on this computer. Your roadmap shows checkpoints, and Home shows your most recently finished topic. Reopen this tour from the sidebar.")];
-        egui::Modal::new(egui::Id::new("welcome_tour")).show(ctx, |ui| {
-            ui.set_width((ctx.screen_rect().width() - 100.0).min(510.0));
-            ui.add_space(10.0);
-            eyebrow(ui, &format!("A QUICK TOUR / {} OF 4", step + 1));
-            ui.label(
-                RichText::new(steps[step].0)
-                    .size(32.0)
-                    .strong()
-                    .color(TAUPE),
-            );
-            mini_array(
-                ui,
-                &["Learn", "Try", "Explain"],
-                Some(step.min(2)),
-                "Small steps. Clear connections.",
-            );
-            ui.label(steps[step].1);
-            muted(ui, steps[step].2);
-            ui.add_space(10.0);
-            ui.horizontal_wrapped(|ui| {
-                if step > 0 && ui.button("← Back").clicked() {
-                    self.tutorial = Some(step - 1);
-                }
-                if primary(
+        egui::Modal::new(egui::Id::new("welcome_tour"))
+            .frame(card())
+            .show(ctx, |ui| {
+                ui.set_width((ctx.screen_rect().width() - 100.0).min(510.0));
+                ui.add_space(10.0);
+                eyebrow(ui, &format!("A QUICK TOUR / {} OF 4", step + 1));
+                ui.label(
+                    RichText::new(steps[step].0)
+                        .size(32.0)
+                        .strong()
+                        .color(TAUPE),
+                );
+                mini_array(
                     ui,
-                    if step == 3 {
-                        "Start my first lesson →"
-                    } else {
-                        "Continue →"
-                    },
-                )
-                .clicked()
-                {
-                    if step == 3 {
+                    &["Learn", "Try", "Explain"],
+                    Some(step.min(2)),
+                    "Small steps. Clear connections.",
+                );
+                ui.label(steps[step].1);
+                muted(ui, steps[step].2);
+                ui.add_space(10.0);
+                ui.horizontal_wrapped(|ui| {
+                    if step > 0 && ui.button("← Back").clicked() {
+                        self.tutorial = Some(step - 1);
+                    }
+                    if primary(
+                        ui,
+                        if step == 3 {
+                            "Start my first lesson →"
+                        } else {
+                            "Continue →"
+                        },
+                    )
+                    .clicked()
+                    {
+                        if step == 3 {
+                            self.tutorial = None;
+                            self.progress.welcomed = true;
+                            self.select_lesson(0);
+                        } else {
+                            self.tutorial = Some(step + 1);
+                        }
+                    }
+                    if ui.button("Explore on my own").clicked() {
                         self.tutorial = None;
                         self.progress.welcomed = true;
-                        self.select_lesson(0);
-                    } else {
-                        self.tutorial = Some(step + 1);
                     }
-                }
-                if ui.button("Explore on my own").clicked() {
-                    self.tutorial = None;
-                    self.progress.welcomed = true;
-                }
+                });
+                ui.add_space(8.0);
             });
-            ui.add_space(8.0);
-        });
     }
     fn show(&mut self, ctx: &egui::Context) {
         let playing_view = self.view == View::Practice && self.reveal
@@ -1103,7 +1126,7 @@ impl Lab {
                     ))
                     .auto_shrink([false, false])
                     .show(ui, |ui| {
-                        ui.set_max_width(1150.0);
+                        ui.set_max_width(ui.available_width().min(1150.0));
                         match self.view {
                             View::Home => self.home(ui),
                             View::Library => self.library(ui),
@@ -1338,7 +1361,23 @@ fn draw_diagram(
         let center = positions[i];
         let r = Rect::from_center_size(center, Vec2::new(96.0, 48.0) * scale);
         p.rect_filled(r.translate(Vec2::new(0.0, 3.0)), 11.0, LINE);
-        p.rect_filled(r, 11.0, if n.active { BLUE } else { SOFT_GREEN });
+        let previous = old.and_then(|d| d.nodes.iter().find(|v| v.label == n.label));
+        let from = if previous.is_some_and(|n| n.active) {
+            BLUE
+        } else {
+            SOFT_GREEN
+        };
+        let to = if n.active { BLUE } else { SOFT_GREEN };
+        let mix = |a: u8, b: u8| (a as f32 + (b as f32 - a as f32) * t) as u8;
+        p.rect_filled(
+            r,
+            11.0,
+            Color32::from_rgb(
+                mix(from.r(), to.r()),
+                mix(from.g(), to.g()),
+                mix(from.b(), to.b()),
+            ),
+        );
         if n.active {
             p.rect_stroke(
                 r,
@@ -1406,6 +1445,7 @@ mod tests {
     fn draw(ctx: &egui::Context, lab: &mut Lab, size: [f32; 2]) -> egui::FullOutput {
         ctx.run(
             egui::RawInput {
+                time: Some(ctx.cumulative_pass_nr() as f64 * 0.5),
                 screen_rect: Some(Rect::from_min_size(Pos2::ZERO, Vec2::from(size))),
                 ..Default::default()
             },
@@ -1476,6 +1516,70 @@ mod tests {
         assert_eq!(lab.step, 0);
         assert!(!lab.play);
     }
+    #[test]
+    fn real_buttons_navigate_and_idle_views_stop_repainting() {
+        let ctx = egui::Context::default();
+        let mut lab = Lab::with_context(&ctx);
+        lab.progress.reduced_motion = true;
+        let click = |lab: &mut Lab, text: &str| {
+            let mut output = draw(&ctx, lab, [1280.0, 900.0]);
+            for _ in 0..3 {
+                output = draw(&ctx, lab, [1280.0, 900.0]);
+            }
+            let pos = output
+                .shapes
+                .iter()
+                .find_map(|s| {
+                    if let egui::Shape::Text(t) = &s.shape {
+                        if t.galley.job.text == text {
+                            return Some(t.pos + t.galley.rect.center().to_vec2());
+                        }
+                    }
+                    None
+                })
+                .unwrap_or_else(|| panic!("missing visible control: {text}"));
+            let _ = ctx.run(
+                egui::RawInput {
+                    screen_rect: Some(Rect::from_min_size(Pos2::ZERO, Vec2::new(1280.0, 900.0))),
+                    time: Some(ctx.cumulative_pass_nr() as f64 * 0.5),
+                    events: vec![
+                        egui::Event::PointerMoved(pos),
+                        egui::Event::PointerButton {
+                            pos,
+                            button: egui::PointerButton::Primary,
+                            pressed: true,
+                            modifiers: egui::Modifiers::NONE,
+                        },
+                        egui::Event::PointerButton {
+                            pos,
+                            button: egui::PointerButton::Primary,
+                            pressed: false,
+                            modifiers: egui::Modifiers::NONE,
+                        },
+                    ],
+                    ..Default::default()
+                },
+                |ctx| lab.show(ctx),
+            );
+        };
+        click(&mut lab, "Continue learning  →");
+        assert_eq!(lab.view, View::Lesson);
+        click(&mut lab, "02  Visual walkthrough");
+        assert_eq!(lab.tab, Tab::Playground);
+        click(&mut lab, "Next →");
+        assert_eq!(lab.step, 1);
+        click(&mut lab, "Start here");
+        assert_eq!(lab.view, View::Home);
+        let mut output = draw(&ctx, &mut lab, [1280.0, 900.0]);
+        for _ in 0..10 {
+            output = draw(&ctx, &mut lab, [1280.0, 900.0]);
+        }
+        assert!(
+            output.viewport_output[&egui::ViewportId::ROOT].repaint_delay
+                > Duration::from_millis(100)
+        );
+    }
+
     /// Exports real egui meshes and font atlas for offline visual review.
     #[test]
     #[ignore]
@@ -1491,11 +1595,25 @@ mod tests {
             "roadmap",
             "tour",
             "small",
+            "completed",
+            "small_lab",
+            "small_tour",
         ] {
             let ctx = egui::Context::default();
             let mut lab = Lab::with_context(&ctx);
             lab.progress.reduced_motion = true;
             match name {
+                "completed" => {
+                    for stage in 0..3 {
+                        lab.progress.set(0, stage, true);
+                    }
+                    lab.progress.set(1, 0, true);
+                }
+                "small_lab" => {
+                    lab.select_structure(9);
+                    lab.tab = Tab::Playground;
+                }
+                "small_tour" => lab.tutorial = Some(3),
                 "lesson" => lab.select_lesson(3),
                 "playground" => {
                     lab.select_structure(9);
@@ -1512,7 +1630,7 @@ mod tests {
                 "tour" => lab.tutorial = Some(0),
                 _ => (),
             }
-            let size = if name == "small" {
+            let size = if name.starts_with("small") {
                 [800.0, 600.0]
             } else {
                 [1280.0, 900.0]

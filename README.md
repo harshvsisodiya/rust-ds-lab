@@ -103,16 +103,18 @@ cargo test --locked
 cargo build --release --locked
 ```
 
-Tests cover data structure invariants and edits, malformed/oversized input, trace bounds, independently known answers, and rendering each actual native view at two viewport sizes without a display. Native builds run those checks for each target. These tests do not replace a manual GPU/window-system compatibility test on every supported computer.
+Tests cover data structure invariants and edits, malformed/oversized input, trace bounds, independently known answers, checkpoint persistence/replacement, actual button navigation, idle repaint behavior, and rendering each native view at two viewport sizes without a display. Native builds run those checks for each target. These tests do not replace a manual GPU/window-system compatibility test on every supported computer.
 
 ## Source map
 
 - `model.rs`: validation, deterministic structures, operations and layout geometry.
 - `catalog.rs` / `background.rs`: structure references, examples and context.
-- `curriculum.rs`: roadmap lessons and prerequisite edges.
+- `curriculum.rs` / `guides.rs`: roadmap lessons, analogies, numbered procedures and prerequisite edges.
 - `practice.rs`: executable worked traces and calculated answers.
 - `desktop.rs` / `theme.rs` / `main.rs`: native UI, palette and window entry point.
 - `progress.rs`: local checkpoints and versioned persistence.
 - `.github/workflows/ci.yml`: four native builds, checksums and versioned GitHub releases. Existing version assets are preserved; bump `Cargo.toml` to publish a new release.
 
 See [LEARNING.md](docs/LEARNING.md) for drills and [RELEASE.md](docs/RELEASE.md) for this release's boundaries. MIT licensed; see [LICENSE](LICENSE).
+
+The tiny embedded navigation-symbol font is a DejaVu Sans subset; see [FONT-LICENSE.txt](docs/FONT-LICENSE.txt). All fonts and shapes are embedded, with no runtime downloads.
