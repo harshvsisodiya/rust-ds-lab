@@ -2,6 +2,10 @@
 
 For each structure: describe the problem it solves, draw a tiny example, predict an operation, step through it, and state the rule that remains true. Then explain its time and memory cost. Keep inputs small enough to inspect every change.
 
+## Checkpoints
+
+Mark **Understand** when you can explain why the idea exists. Mark **Visualize** when you can predict the next state and explain the invariant. Mark **Practice** after working through a case and comparing your reasoning with the solution. All three stages complete a topic; uncheck a stage whenever you want to revisit it. Your roadmap, library and recent-completion card update immediately and progress survives restarts.
+
 ## Suggested sequence
 
 1. **Arrays and hashing:** explain direct indexing, collisions, duplicate updates and membership. Compare a count map with a set: what information does the set discard?

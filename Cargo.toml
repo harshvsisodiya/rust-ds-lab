@@ -1,6 +1,6 @@
 [package]
 name = "rust-ds-lab"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 rust-version = "1.88"
 description = "Native Rust data structure and algorithm learning desktop"
@@ -15,3 +15,6 @@ lto = "thin"
 codegen-units = 1
 strip = true
 panic = "abort"
+
+[dev-dependencies]
+serde_json = "1"

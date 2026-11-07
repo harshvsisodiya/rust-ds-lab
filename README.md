@@ -24,16 +24,22 @@ chmod +x rust-ds-lab-linux-x86_64
 
 A single native executable cannot run unchanged across Windows, Linux and macOS. Each download contains the same Rust application compiled for that platform. No Rust installation is needed to run it. Normal OS windowing and graphics libraries are still required: Linux needs a graphical X11/Wayland session, OpenGL, xkbcommon and glibc 2.35 or newer. Builds use Ubuntu 22.04, Windows Server 2022 and the listed macOS runners; this is not a promise of support for every OS version, GPU or CPU architecture. Mobile, 32-bit and Linux/Windows ARM builds are not included. Downloads are not commercially signed or Apple-notarized; the OS may show its usual downloaded-app warning. `SHA256SUMS.txt` accompanies releases for integrity checking.
 
-## Explore
+## A calmer learning workspace
 
-1. Start at **Learning roadmap**. Zoom or scroll the connected graph and open a topic.
-2. Read **why**, **how**, **when**, **industry examples** and **historical context**. References distinguish documented milestones from uncertain origins.
-3. Open a structure lab. Build the example or enter up to 16 values. Inspect node roles, links, summaries, invariants and operation costs.
-4. Use Restart, Previous, Next, Play and Pause. Playback runs at 0.5–5 steps per second.
-5. Predict a practice answer before selecting **Reveal worked solution**. Read each computed state and its explanation.
-6. Mark a roadmap topic understood. Progress and input state last for this session only.
+The native interface uses the supplied cream, beige, taupe, sage and pale-blue palette. Spacious cards, curved roadmap connections, clear labels and brief 280 ms state transitions help explain changes. **Reduce motion** disables transitions. The first launch opens a four-step tour; **Take the tour** reopens it anytime.
 
-The [Black Knight palette](https://colormagic.app/palette/671d791ce9810edeaccc93a1) uses `#000000`, `#1c1c1c`, `#3d3d3d`, `#7d7d7d`, and `#b0b0b0`; `#f2f2f2` improves text contrast. Highlighted nodes use light fills and dark text. Node roles and step explanations communicate meaning alongside shading.
+1. **Start here** offers your next unfinished roadmap lesson and your most recently completed topic.
+2. **Lesson library** searches all guided topics and structure labs by name, concept or use.
+3. **Understand** explains why, how, when, industry uses and historical context. Guided lessons include three computed snapshots; structure lessons show their actual layout, invariant and challenge.
+4. **Visual walkthrough / Playground** offers Back, Next, Play, Reset and adjustable playback speed. Structure labs also accept custom inputs and edits.
+5. **Practice** offers 10 worked variations per topic. Write a prediction, reveal the explanation, step through the solution, and compare the calculated answer. Python reference examples live in their own structure tab and can be copied.
+6. Mark **Understand**, **Visualize** and **Practice** checkpoints. Three checked stages finish a topic. Roadmap cards and library cards show each stage. These are self-assessed checkpoints, not automated grading or a claim that every exercise was solved.
+
+Checkpoints exist separately for all 18 roadmap topics and all 16 structure labs. The home page suggests the next incomplete roadmap topic; a library search reaches any partially completed structure lab. Progress, the most recent completion, tour completion and reduced-motion preference persist locally. Exercise inputs and predictions remain session-only. There is no account, telemetry or cloud synchronization.
+
+Local progress file: Linux `$XDG_CONFIG_HOME/rust-ds-lab/progress.txt` (or `~/.config/rust-ds-lab/progress.txt`), macOS `~/Library/Application Support/rust-ds-lab/progress.txt`, Windows `%APPDATA%/rust-ds-lab/progress.txt`. A failed save produces an in-app message. Version 0.2 progress was session-only and cannot be recovered after closing that version.
+
+Palette: black `#000000`, charcoal `#73787C`, gray `#C5C6C7`, pale blue `#D7E5F0`, beige `#C9AD93`, taupe `#554940`, sage `#879A77`. Derived cream `#F7F3EC`, paper `#FFFDF9` and darker text improve readability. Blue marks active nodes; labels and explanatory notes communicate meaning alongside color. Illustrative complexity curves compare common growth rates and are not benchmark measurements.
 
 ## Coverage
 
@@ -71,7 +77,7 @@ Roadmap traces compute frequency counts, two-pointer searches, bracket stacks, b
 ## Efficiency and model boundaries
 
 - Native vector shapes and embedded fonts; no video, browser engine or network fetching.
-- Event-driven repainting. While idle, the app does not request continuous redraws. Timed repainting runs only during playback; window-system events and UI animations may still cause frames.
+- Event-driven repainting. While idle, the app does not request continuous redraws. Timed repainting runs during playback and brief state transitions; window-system events and UI animations may still cause frames.
 - Only the selected exercise is generated and retained. Structure diagrams are cached until their input or replay step changes. Inputs and teaching trace sizes are bounded.
 - Release builds use size optimization, thin LTO, one codegen unit and stripped symbols. No multisampling. This reduces work but is not a measured CPU/GPU guarantee on every computer.
 - Linked diagrams model logical links with indexed sequences, not raw memory addresses. Hashing uses eight teaching buckets, not Rust's or Python's production layout. Editing range structures rebuilds a small teaching diagram; listed costs describe standard data structure operations, not rendering or model reconstruction.
@@ -105,7 +111,8 @@ Tests cover data structure invariants and edits, malformed/oversized input, trac
 - `catalog.rs` / `background.rs`: structure references, examples and context.
 - `curriculum.rs`: roadmap lessons and prerequisite edges.
 - `practice.rs`: executable worked traces and calculated answers.
-- `desktop.rs` / `main.rs`: native UI and window entry point.
+- `desktop.rs` / `theme.rs` / `main.rs`: native UI, palette and window entry point.
+- `progress.rs`: local checkpoints and versioned persistence.
 - `.github/workflows/ci.yml`: four native builds, checksums and versioned GitHub releases. Existing version assets are preserved; bump `Cargo.toml` to publish a new release.
 
 See [LEARNING.md](docs/LEARNING.md) for drills and [RELEASE.md](docs/RELEASE.md) for this release's boundaries. MIT licensed; see [LICENSE](LICENSE).
